@@ -1,11 +1,16 @@
+/* Android IMSI-Catcher Detector | (c) AIMSICD Privacy Project
+ * -----------------------------------------------------------
+ * LICENSE:  http://git.io/vki47 | TERMS:  http://git.io/vki4o
+ * -----------------------------------------------------------
+ */
 package com.SecUpwN.AIMSICD.adapters;
-
-import com.SecUpwN.AIMSICD.R;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.SecUpwN.AIMSICD.R;
 
 public class DefaultLocationCardInflater implements IAdapterViewInflater<CardItemData> {
 
@@ -39,11 +44,13 @@ public class DefaultLocationCardInflater implements IAdapterViewInflater<CardIte
 
         public ViewHolder(View rootView) {
             mRootView = rootView;
-            mCountry = (TextView) mRootView.findViewById(R.id.country);
-            mMcc = (TextView) mRootView.findViewById(R.id.mcc);
-            mLat = (TextView) mRootView.findViewById(R.id.lat);
-            mLng = (TextView) mRootView.findViewById(R.id.lng);
+
+            mCountry =  (TextView) mRootView.findViewById(R.id.country);
+            mMcc =      (TextView) mRootView.findViewById(R.id.mcc);
+            mLat =      (TextView) mRootView.findViewById(R.id.lat);
+            mLng =      (TextView) mRootView.findViewById(R.id.lng);
             mRecordId = (TextView) mRootView.findViewById(R.id.record_id);
+
             rootView.setTag(this);
         }
 

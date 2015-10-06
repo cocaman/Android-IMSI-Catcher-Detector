@@ -1,3 +1,8 @@
+/* Android IMSI-Catcher Detector | (c) AIMSICD Privacy Project
+ * -----------------------------------------------------------
+ * LICENSE:  http://git.io/vki47 | TERMS:  http://git.io/vki4o
+ * -----------------------------------------------------------
+ */
 package com.SecUpwN.AIMSICD.drawer;
 
 public class DrawerMenuSection implements NavDrawerItem {
@@ -30,7 +35,7 @@ public class DrawerMenuSection implements NavDrawerItem {
         this.label = label;
     }
 
-    public void setIcon(int icon) {
+    public void setmIconId(int icon) {
         this.icon = icon;
     }
 

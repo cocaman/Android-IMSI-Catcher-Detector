@@ -1,3 +1,8 @@
+/* Android IMSI-Catcher Detector | (c) AIMSICD Privacy Project
+ * -----------------------------------------------------------
+ * LICENSE:  http://git.io/vki47 | TERMS:  http://git.io/vki4o
+ * -----------------------------------------------------------
+ */
 package com.SecUpwN.AIMSICD.service;
 
 import android.annotation.TargetApi;
@@ -14,17 +19,17 @@ import com.SecUpwN.AIMSICD.R;
 import com.SecUpwN.AIMSICD.adapters.AIMSICDDbAdapter;
 import com.SecUpwN.AIMSICD.utils.Cell;
 import com.SecUpwN.AIMSICD.utils.GeoLocation;
+import com.SecUpwN.AIMSICD.utils.TruncatedLocation;
 
 /**
  * Class to handle GPS location tracking
  */
 public class LocationTracker {
-    // how long with no movement detected, before we assume we are not moving
-    public static final long MOVEMENT_THRESHOLD_MS = 20*1000;
 
-    /**
-     * Location listener stuff
-     */
+    private static final String TAG = "LocationTracker";
+    // how long with no movement detected, before we assume we are not moving
+    public static final long MOVEMENT_THRESHOLD_MS = 20 * 1000;
+
     private AimsicdService context;
     private SharedPreferences prefs;
     private static LocationManager lm;
@@ -34,9 +39,9 @@ public class LocationTracker {
     private Location lastLocation;
     private static final long GPS_MIN_UPDATE_TIME = 10000;
     private static final float GPS_MIN_UPDATE_DISTANCE = 10;
+    private AIMSICDDbAdapter mDbHelper;
 
-
-    LocationTracker(AimsicdService service, LocationListener extLocationListener) {
+    public LocationTracker(AimsicdService service, LocationListener extLocationListener) {
         this.context = service;
         this.extLocationListener = extLocationListener;
 
@@ -44,6 +49,7 @@ public class LocationTracker {
         mLocationListener = new MyLocationListener();
         prefs = context.getSharedPreferences(
                 AimsicdService.SHARED_PREFERENCES_BASENAME, 0);
+        mDbHelper = new AIMSICDDbAdapter(context);
     }
 
     public void start() {
@@ -53,21 +59,21 @@ public class LocationTracker {
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_MIN_UPDATE_TIME,
                     GPS_MIN_UPDATE_DISTANCE, mLocationListener);
         } catch (IllegalArgumentException e) {
-            // provider doesn't exist, so ignore
+            Log.d(TAG, "GPS location provider doesnt exist");
         }
 
         try {
             lm.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, GPS_MIN_UPDATE_TIME,
                     GPS_MIN_UPDATE_DISTANCE, mLocationListener);
         } catch (IllegalArgumentException e) {
-            // provider doesn't exist, so ignore
+            Log.d(TAG, "Passive location provider doesnt exist");
         }
 
         try {
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, GPS_MIN_UPDATE_TIME,
                     GPS_MIN_UPDATE_DISTANCE, mLocationListener);
         } catch (IllegalArgumentException e) {
-            // provider doesn't exist, so ignore
+            Log.d(TAG, "Network location provider doesnt exist");
         }
     }
 
@@ -81,28 +87,35 @@ public class LocationTracker {
 
     /**
      * Check if we are moving, using last known GPS locations
+     *
      * @return
      */
     public boolean notMovedInAWhile() {
         // first-lock, assume no movement
-        if (lastLocationTime <= 0) return true;
+        if (lastLocationTime <= 0)
+            return true;
 
         // haven't received a GPS update in a while, assume no movement
-        if (System.currentTimeMillis() - lastLocationTime > MOVEMENT_THRESHOLD_MS) return true;
-
-        return false;
+        return System.currentTimeMillis() - lastLocationTime > MOVEMENT_THRESHOLD_MS;
     }
 
     public GeoLocation lastKnownLocation() {
         GeoLocation loc = null;
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (location != null && (location.getLatitude() != 0.0 && location.getLongitude() != 0.0)) {
-            loc = GeoLocation.fromDegrees(location.getLatitude(), location.getLongitude());
+        if (location != null &&
+                (Double.doubleToLongBits(location.getLatitude()) != 0 &&
+                        Double.doubleToLongBits(location.getLongitude()) != 0)) {
+
+            TruncatedLocation TruncatedLocation = new TruncatedLocation(location);
+            loc = GeoLocation.fromDegrees(TruncatedLocation.getLatitude(), TruncatedLocation.getLongitude());
         } else {
             location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if (location != null && (location.getLatitude() != 0.0
-                    && location.getLongitude() != 0.0)) {
-                loc = GeoLocation.fromDegrees(location.getLatitude(), location.getLongitude());
+            if (location != null &&
+                       (Double.doubleToLongBits(location.getLatitude()) != 0 &&
+                               Double.doubleToLongBits(location.getLongitude()) != 0)) {
+
+                TruncatedLocation TruncatedLocation = new TruncatedLocation(location);
+                loc = GeoLocation.fromDegrees(TruncatedLocation.getLatitude(), TruncatedLocation.getLongitude());
             } else {
                 String coords = prefs.getString(context.getString(R.string.data_last_lat_lon), null);
                 if (coords != null) {
@@ -114,10 +127,9 @@ public class LocationTracker {
                         Cell cell = context.getCell();
                         if (cell != null) {
                             Log.d("location", "Looking up MCC " + cell.getMCC());
-                            AIMSICDDbAdapter mDbHelper = new AIMSICDDbAdapter(context);
-                            mDbHelper.open();
+
                             double[] defLoc = mDbHelper.getDefaultLocation(cell.getMCC());
-                            mDbHelper.close();
+
                             loc = GeoLocation.fromDegrees(defLoc[0], defLoc[1]);
                         }
                     } catch (Exception e) {
@@ -127,20 +139,21 @@ public class LocationTracker {
             }
         }
 
-        if (loc != null) Log.i("location", "Last known location " + loc.toString());
+        if (loc != null)
+            Log.i("location", "Last known location " + loc.toString());
+
         return loc;
     }
 
     /**
-     * Our location listener, so that we can update our internal status before passing on the
-     * events to the caller
+     * Our location listener, so that we can update our internal status before passing on the events
+     * to the caller
      */
     private class MyLocationListener implements LocationListener {
 
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
         @Override
         public void onLocationChanged(Location loc) {
-            //Log.d("location", "Got location " + loc);
             if (lastLocation != null &&
                     lastLocation.getLongitude() == loc.getLongitude() &&
                     lastLocation.getLatitude() == loc.getLatitude()) {

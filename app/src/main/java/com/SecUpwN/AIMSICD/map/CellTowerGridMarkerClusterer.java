@@ -1,28 +1,21 @@
+/* Android IMSI-Catcher Detector | (c) AIMSICD Privacy Project
+ * -----------------------------------------------------------
+ * LICENSE:  http://git.io/vki47 | TERMS:  http://git.io/vki4o
+ * -----------------------------------------------------------
+ */
 package com.SecUpwN.AIMSICD.map;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TableRow;
-import android.widget.TextView;
 
-import com.SecUpwN.AIMSICD.R;
+import org.osmdroid.bonuspack.clustering.RadiusMarkerClusterer;
 
-import org.osmdroid.bonuspack.clustering.GridMarkerClusterer;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
-
-import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Overlay class for OSMDroid map to display BTS pins
+ * Description:     Overlay class for OSMDroid map to display multiple BTS pins
+ *                  as one numbered point, clustering multiple pins.
  */
-public class CellTowerGridMarkerClusterer extends GridMarkerClusterer {
+public class CellTowerGridMarkerClusterer extends RadiusMarkerClusterer {
     protected Context mContext;
 
     public CellTowerGridMarkerClusterer(Context ctx) {

@@ -20,26 +20,24 @@ package com.SecUpwN.AIMSICD.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Environment;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.SecUpwN.AIMSICD.R;
+import com.SecUpwN.AIMSICD.activities.MapViewerOsmDroid;
+import com.SecUpwN.AIMSICD.adapters.AIMSICDDbAdapter;
+import com.SecUpwN.AIMSICD.service.AimsicdService;
 import com.SecUpwN.AIMSICD.service.CellTracker;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -72,76 +70,61 @@ import java.util.List;
  * Issues:          AS complaints that several of these methods are not used...
  *
  * ChangeLog:
+ *              2015-05-08   SecUpwN   Added Toast Extender for longer toasts
  *
  */
  public class Helpers {
 
-    private static final String TAG = "AIMSICD";
-    private static final String mTAG = "Helpers";
-
+    private static final String TAG = "Helpers";
     private static final int CHARS_PER_LINE = 34;
 
-    /**
-     * Long toast message
-     * (Predefined in AOS to 3500 ms = 3.5 sec)
-     *
-     * @param context Application Context
-     * @param msg     Message to send
-     */
-    public static void msgLong(final Context context, final String msg) {
+   /**
+    * Description:      Long toast message
+    *
+    * Notes:
+    *
+    *       This is only a proxy method to the Toaster class.
+    *       It also takes care of using the Toaster's Singleton.
+    *
+    * @param context Application Context
+    * @param msg     Message to send
+    */
+    public static void msgLong(Context context, String msg) {
         if (context != null && msg != null) {
-            new Handler(context.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(context, msg.trim(), Toast.LENGTH_LONG).show();
-                }
-            });
+            Toaster.getInstance().msgLong(context, msg);
         }
     }
-
-    /**
-     * Short toast message
-     * (Predefined in AOS to 2000 ms = 2 sec)
-     *
-     * @param context Application Context
-     * @param msg     Message to send
-     */
-    public static void msgShort(final Context context, final String msg) {
+   /**
+    * Description:      Short toast message
+    *
+    * Notes:
+    *
+    *       This is only a proxy method to the Toaster class.
+    *       It also takes care of using the Toaster's Singleton.
+    *
+    * @param context Application Context
+    * @param msg     Message to send
+    */
+    public static void msgShort(Context context, String msg) {
         if (context != null && msg != null) {
-            new Handler(context.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(context, msg.trim(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            Toaster.getInstance().msgShort(context, msg);
         }
     }
-
-    /**
-     * Long toast message
-     *
-     * @param context Application Context
-     * @param msg     Message to send
-     */
+   /**
+    * Description:      Long toast message
+    *
+    * Notes:
+    *
+    *       This is only a proxy method to the Toaster class.
+    *       It also takes care of using the Toaster's Singleton.
+    *
+    * @param context Application Context
+    * @param msg     Message to send
+    */
     public static void sendMsg(Context context, String msg) {
         if (context != null && msg != null) {
-            msgLong(context, msg);
+            Toaster.getInstance().msgLong(context, msg);
         }
-    }
-
-    /**
-     * Return a timestamp
-     *
-     * @param context Application Context
-     */
-    @SuppressWarnings("UnnecessaryFullyQualifiedName")
-    public static String getTimestamp(Context context) {
-        String timestamp;
-        Date now = new Date();
-        java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-        java.text.DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
-        timestamp = dateFormat.format(now) + ' ' + timeFormat.format(now);
-        return timestamp;
     }
 
     /**
@@ -149,7 +132,6 @@ import java.util.List;
      * Requires:        android:name="android.permission.ACCESS_NETWORK_STATE"
      */
     public static Boolean isNetAvailable(Context context) {
-
         try {
             ConnectivityManager cM = (ConnectivityManager)
                     context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -159,7 +141,7 @@ import java.util.List;
                 return wifiInfo.isConnected() || mobileInfo.isConnected();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
         }
         return false;
     }
@@ -236,11 +218,12 @@ import java.util.List;
     */
     public static void getOpenCellData(Context context, Cell cell, char type) {
         if (Helpers.isNetAvailable(context)) {
-            if (!CellTracker.OCID_API_KEY.equals("NA")) {
+            if (!"NA".equals(CellTracker.OCID_API_KEY)) {
                 double earthRadius = 6371.01; // [Km]
                 int radius = 2; // Use a 2 Km radius with center at GPS location.
 
-                if (cell.getLat() != 0.0 && cell.getLon() != 0.0) {
+                if (Double.doubleToRawLongBits(cell.getLat()) != 0 &&
+                        Double.doubleToRawLongBits(cell.getLon()) != 0) {
                     //New GeoLocation object to find bounding Coordinates
                     GeoLocation currentLoc = GeoLocation.fromDegrees(cell.getLat(), cell.getLon());
 
@@ -254,175 +237,40 @@ import java.util.List;
                                    + String.valueOf(boundingCoords[1].getLatitudeInDegrees()) + ","
                                    + String.valueOf(boundingCoords[1].getLongitudeInDegrees());
 
-                    Log.i(TAG, mTAG + ":OCID BBOX is set to: " + boundParameter
-                                + "  with radius " + radius + " Km.");
+                    Log.i(TAG, "OCID BBOX is set to: " + boundParameter + "  with radius " + radius + " Km.");
 
                     StringBuilder sb = new StringBuilder();
                     sb.append("http://www.opencellid.org/cell/getInArea?key=")
                             .append(CellTracker.OCID_API_KEY).append("&BBOX=")
                             .append(boundParameter);
 
+                    Log.i(TAG, "OCID MCC is set to: " + cell.getMCC());
                     if (cell.getMCC() != Integer.MAX_VALUE) {
                         sb.append("&mcc=").append(cell.getMCC());
                     }
+                    Log.i(TAG, "OCID MNC is set to: " + cell.getMNC());
                     if (cell.getMNC() != Integer.MAX_VALUE) {
                         sb.append("&mnc=").append(cell.getMNC());
                     }
-                    // We need DBe_import filtering, if we wanna keep these lines commented out...
-                    //if (cell.getLAC() != Integer.MAX_VALUE) {
-                    //    sb.append("&lac=").append(cell.getLAC());
-                    //}
 
                     sb.append("&format=csv");
                     new RequestTask(context, type).execute(sb.toString());
                 }
             } else {
-                Helpers.sendMsg(context, "No OpenCellID API Key detected! \nPlease enter your key in settings first.");
+                if(context instanceof MapViewerOsmDroid) {
+                    ((MapViewerOsmDroid)context).setRefreshActionButtonState(false);
+                }
+                Helpers.sendMsg(context, context.getString(R.string.no_opencellid_key_detected));
             }
         } else {
+            if(context instanceof MapViewerOsmDroid) {
+                ((MapViewerOsmDroid)context).setRefreshActionButtonState(false);
+            }
             final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle(R.string.no_network_connection_title)
                     .setMessage(R.string.no_network_connection_message);
             builder.create().show();
         }
-    }
-
-    public static String ByteToString(byte[] byteArray) {
-        if (byteArray == null) {
-            return null;
-        }
-        try {
-            String result = new String(byteArray, "ASCII");
-            result = String.copyValueOf(result.toCharArray(), 0, byteArray.length);
-            return result;
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Converts a byte array into a String array
-     *
-     * @param byteArray  byte array to convert
-     * @param dataLength length of byte array
-     * @return String array copy of passed byte array
-     */
-    public static List<String> ByteArrayToStringList(byte[] byteArray, int dataLength) {
-        if (byteArray == null) {
-            return null;
-        }
-        if (dataLength <= 0) {
-            return null;
-        }
-        if (dataLength > byteArray.length) {
-            return null;
-        }
-
-        // Replace all invisible chars with '.'
-        for (int i = 0; i < dataLength; i++) {
-            if ((byteArray[i] == 0x0D) || (byteArray[i] == 0x0A)) {
-                byteArray[i] = 0;
-                continue;
-            }
-            if (byteArray[i] < 0x20) {
-                byteArray[i] = 0x2E;
-            }
-            if (byteArray[i] > 0x7E) {
-                byteArray[i] = 0x2E;
-            }
-        }
-
-        // Split and convert to string
-        List<String> result = new ArrayList<>();
-        for (int i = 0; i < dataLength; i++) {
-            if (byteArray[i] == 0) {
-                continue;
-            }
-            int blockLength = -1;
-            for (int j = i + 1; j < dataLength; j++) {
-                if (byteArray[j] == 0) {
-                    blockLength = j - i;
-                    break;
-                }
-            }
-            if (blockLength == -1) {
-                blockLength = dataLength - i;
-            }
-            byte[] mBlockData = new byte[blockLength];
-            System.arraycopy(byteArray, i, mBlockData, 0, blockLength);
-            result.add(ByteToString(mBlockData));
-            i += blockLength;
-        }
-        if (result.size() <= 0) {
-            return null;
-        }
-        return result;
-    }
-
-    /**
-     * Checks if the external media (SD Card) is writable
-     *
-     * @return boolean True if Writable
-     */
-    public static boolean isSdWritable() {
-
-        boolean mExternalStorageAvailable = false;
-        try {
-            String state = Environment.getExternalStorageState();
-
-            if (Environment.MEDIA_MOUNTED.equals(state)) {
-                // We can read and write the media
-                mExternalStorageAvailable = true;
-                Log.i(TAG, mTAG + ": External storage card is readable.");
-            } else {
-                mExternalStorageAvailable = false;
-            }
-        } catch (Exception ex) {
-            Log.e(TAG, mTAG + ":isSdWritable - " + ex.getMessage());
-        }
-        return mExternalStorageAvailable;
-    }
-
-    /**
-     * Return a String List representing response from invokeOemRilRequestRaw
-     *
-     * @param aob byte array response from invokeOemRilRequestRaw
-     */
-    public static List<String> unpackListOfStrings(byte aob[]) {
-
-        if (aob.length == 0) {
-            // WARNING: This one is very chatty!
-            //Log.v(TAG, "invokeOemRilRequestRaw: string list response Length = 0");
-            return Collections.emptyList();
-        }
-
-        int lines = aob.length / CHARS_PER_LINE;
-
-        String[] display = new String[lines];
-        for (int i = 0; i < lines; i++) {
-            int offset, byteCount;
-            offset = i * CHARS_PER_LINE + 2;
-            byteCount = 0;
-
-            if (offset + byteCount >= aob.length) {
-                Log.e(TAG, "Unexpected EOF");
-                break;
-            }
-
-            while (aob[offset + byteCount] != 0 && (byteCount < CHARS_PER_LINE)) {
-                byteCount += 1;
-                if (offset + byteCount >= aob.length) {
-                    Log.e(TAG, "Unexpected EOF");
-                    break;
-                }
-            }
-            display[i] = new String(aob, offset, byteCount).trim();
-        }
-        int newLength = display.length;
-        while (newLength > 0 && TextUtils.isEmpty(display[newLength - 1])) {
-            newLength -= 1;
-        }
-        return Arrays.asList(Arrays.copyOf(display, newLength));
     }
 
     /**
@@ -434,11 +282,12 @@ import java.util.List;
 
         if (aob.length == 0) {
             // WARNING: This one is very chatty!
-            //Log.v(TAG, "invokeOemRilRequestRaw: byte-list response Length = 0");
+            Log.v(TAG, "invokeOemRilRequestRaw: byte-list response Length = 0");
             return Collections.emptyList();
         }
         int lines = aob.length / CHARS_PER_LINE;
         String[] display = new String[lines];
+
         for (int i = 0; i < lines; i++) {
             int offset, byteCount;
             offset = i * CHARS_PER_LINE + 2;
@@ -469,89 +318,9 @@ import java.util.List;
         try {
             result = SystemPropertiesReflection.get(context, prop);
         } catch (IllegalArgumentException iae) {
-            Log.e(TAG, mTAG + ": Failed to get system property: " + prop);
+            Log.e(TAG, "Failed to get system property: " + prop, iae);
         }
         return result == null ? def : result;
-    }
-
-    // Use this when invoking from SU shell (not recommended!)
-    public static String setProp(String prop, String value) {
-        // We might wanna return the success of this. From mksh it is given by "$?" (0=ok, 1=fail)
-        return CMDProcessor.runSuCommand("setprop " + prop + " " + value).getStdout();
-    }
-
-    /**
-     * Use this to setprop using reflection of native android.os.SystemProperties class
-     *      IllegalArgumentException if the key exceeds 32 characters
-     *      IllegalArgumentException if the value exceeds 92 characters
-     *
-     * Generally speaking this cannot be done unless the app is running under system UID:
-     *
-     * " When you reflect the android.os.SystemProperties and make the call then you will
-     *   make the request as the UID of the application and it will be rejected as the
-     *   properties service has an ACL of allowed UIDs to write to particular key domains,
-     *   see: /system/core/init/property_service.c "
-     */
-    /*  Something wrong here...
-    public static String setSystemProp(Context context, String prop, String value, String def) {
-        String result = null;
-        try {
-            result = SystemPropertiesReflection.set(context, prop, value);
-        } catch (IllegalArgumentException iae) {
-            Log.e(TAG, mTAG + ": Failed to Set system property: " + prop);
-        }
-        return result == null ? def : result;
-    }
-    */
-
-
-    /**
-     * Checks device for SuperUser permission
-     *
-     * @return If SU was granted or denied
-     */
-    @SuppressWarnings("MethodWithMultipleReturnPoints")
-    public static boolean checkSu() {
-        if (!new File("/system/bin/su").exists()
-                && !new File("/system/xbin/su").exists()) {
-            Log.e(TAG, mTAG + ": su binary does not exist!!!");
-            return false; // tell caller to bail...
-        }
-        try {
-            if (CMDProcessor.runSuCommand("ls /data/app-private").success()) {
-                Log.i(TAG, mTAG + ": SU exists and we have permission");
-                return true;
-            } else {
-                Log.i(TAG, mTAG + ": SU exists but we don't have permission");
-                return false;
-            }
-        } catch (NullPointerException e) {
-            Log.e(TAG, mTAG + ": NPE while looking for su binary: ", e);
-            return false;
-        }
-    }
-
-    /**
-     * Checks to see if Busybox is installed in "/system/"
-     *
-     * @return If busybox exists
-     */
-    public static boolean checkBusybox() {
-        if (!new File("/system/bin/busybox").exists()
-                && !new File("/system/xbin/busybox").exists()) {
-            Log.e(TAG, mTAG + ": Busybox not in xbin or bin!");
-            return false;
-        }
-        try {
-            if (!CMDProcessor.runSuCommand("busybox mount").success()) {
-                Log.e(TAG, mTAG + ": Busybox is there but is broken!");
-                return false;
-            }
-        } catch (NullPointerException e) {
-            Log.e(TAG, mTAG + ": NPE while testing Busybox: ", e);
-            return false;
-        }
-        return true;
     }
 
     public static String convertStreamToString(InputStream is) throws Exception {
@@ -565,5 +334,48 @@ import java.util.List;
         return sb.toString();
     }
 
-}
+    /**
+     * Description:     Deletes the entire database by removing internal SQLite DB file
+     *
 
+     *
+     * Dependencies:    Used in AIMSICD.java
+     *
+     * Notes:           See Android developer info: http://tinyurl.com/psz8vmt
+     *
+     *              WARNING!
+     *              This deletes the entire database, thus any subsequent DB access will FC app.
+     *              Therefore we need to either restart app or run AIMSICDDbAdapter, to rebuild DB.
+     *              See: #581
+     *
+     *              In addition, since SQLite is kept in memory during lifetime of App, and
+     *              is using Journaling, we have to restart app in order to clear old data
+     *              already in memory.
+     *
+     * @param pContext Context of Activity
+     */
+    public static void askAndDeleteDb(final Context pContext) {
+        AlertDialog lAlertDialog = new AlertDialog.Builder(pContext)
+                .setNegativeButton(R.string.open_cell_id_button_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setPositiveButton(R.string.open_cell_id_button_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Probably put in try/catch in case file removal fails...
+                        pContext.stopService(new Intent(pContext, AimsicdService.class));
+                        pContext.deleteDatabase("aimsicd.db");
+                        new AIMSICDDbAdapter(pContext);
+                        pContext.startService(new Intent(pContext, AimsicdService.class));
+                        msgLong(pContext,pContext.getString(R.string.delete_database_msg_success));
+                    }
+                })
+                .setMessage(pContext.getString(R.string.clear_database_question))
+                .setTitle(R.string.clear_database)
+                .setCancelable(false)
+                .setIcon(R.drawable.ic_action_delete_database).create();
+        lAlertDialog.show();
+    }
+}

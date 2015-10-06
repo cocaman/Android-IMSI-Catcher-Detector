@@ -1,3 +1,8 @@
+/* Android IMSI-Catcher Detector | (c) AIMSICD Privacy Project
+ * -----------------------------------------------------------
+ * LICENSE:  http://git.io/vki47 | TERMS:  http://git.io/vki4o
+ * -----------------------------------------------------------
+ */
 package com.SecUpwN.AIMSICD.test;
 
 import android.test.ActivityInstrumentationTestCase2;
@@ -13,8 +18,23 @@ public class DummyTest extends ActivityInstrumentationTestCase2<AIMSICD> {
         super(AIMSICD.class);
     }
 
-    public void testSomething() {
-        try { Thread.sleep(1000); } catch (Exception e) {}
+    /**
+     * Manual test to check if the progress bar is visible in the main activity
+     */
+    public void testProgressBar() {
+        try {
+            getActivity().showProgressbar(true, 100, 0);
+            Thread.sleep(5000);
+            getActivity().showProgressbar(false, 100, 30);
+            Thread.sleep(1000);
+            getActivity().showProgressbar(false, 100, 50);
+            Thread.sleep(1000);
+            getActivity().showProgressbar(false, 100, 80);
+            Thread.sleep(1000);
+            getActivity().hideProgressbar();
+        } catch (InterruptedException e) {
+        }
+
         assertTrue(true);
     }
 }

@@ -1,3 +1,8 @@
+/* Android IMSI-Catcher Detector | (c) AIMSICD Privacy Project
+ * -----------------------------------------------------------
+ * LICENSE:  http://git.io/vki47 | TERMS:  http://git.io/vki4o
+ * -----------------------------------------------------------
+ */
 package com.SecUpwN.AIMSICD.utils;
 
 import android.content.Context;
@@ -17,7 +22,8 @@ public class Status {
     // Dependencies:  Status.java, CellTracker.java, Icon.java ( + others?)
     // They should be based on the detection scores here: <TBA>
     // -- E:V:A 2015-01-19
-    public static Type currentStatus;
+    private static Type currentStatus;
+
     public enum Type {
         ALARM, // Which is this?
         // RUN, // BLACK
@@ -33,6 +39,9 @@ public class Status {
      * if the new status is different from the previous one
      */
     public static void setCurrentStatus(Type t, Context context) {
+        if(t == null) {
+            currentStatus = Type.IDLE;
+        }
         if(t != currentStatus) {
             Intent intent = new Intent("StatusChange");
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);

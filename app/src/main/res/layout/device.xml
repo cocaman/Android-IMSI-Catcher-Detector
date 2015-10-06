@@ -3,7 +3,9 @@
 <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:fadingEdgeLength="0dp">
     <TableLayout
 
             android:id="@+id/mainView"
@@ -34,7 +36,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/device_type" android:text="@string/empty"
                     android:textColor="@color/medium_blue"
                     android:padding="2dip" android:gravity="start"/>
@@ -53,7 +55,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/device_imei" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -72,7 +74,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/device_version" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -104,7 +106,7 @@
                     android:layout_width="fill_parent"
                     android:layout_gravity="end"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/sim_country" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -124,7 +126,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/sim_operator_id" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -144,7 +146,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/sim_operator_name" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -163,7 +165,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/sim_imsi" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -182,7 +184,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/sim_serial" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -215,7 +217,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/network_name" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -234,7 +236,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/network_code" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -254,7 +256,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/network_type" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -273,7 +275,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/network_lac" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -295,7 +297,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/network_cellid" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -317,7 +319,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/network_psc" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -338,7 +340,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/network_roaming" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -356,7 +358,7 @@
                     android:textColor="@color/white"
                     android:padding="2dip" android:gravity="end"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/data_activity" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -375,7 +377,7 @@
                     android:textColor="@color/white"
                     android:padding="2dip" android:gravity="end"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/data_status" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -400,7 +402,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/network_lte_timing_advance" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -423,7 +425,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/network_netid" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -446,7 +448,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/network_sysid" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"
@@ -469,7 +471,7 @@
                     android:layout_gravity="end"
                     android:layout_width="fill_parent"/>
 
-            <TextView
+            <com.SecUpwN.AIMSICD.widget.HighlightTextView
                     android:id="@+id/network_baseid" android:text="@string/empty"
                     android:layout_weight="1"
                     android:textColor="@color/medium_blue"

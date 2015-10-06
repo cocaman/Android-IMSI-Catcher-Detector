@@ -1,39 +1,7 @@
-/* Android IMSI Catcher Detector
-*      Copyright (C) 2014
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You may obtain a copy of the License at
-*      https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/blob/master/LICENSE
-*/
-
-/*
- * Portions of this software have been copied and modified from
- * Femtocatcher https://github.com/iSECPartners/femtocatcher
- *
- * Copyright (C) 2013 iSEC Partners
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License along
- *  with this program; if not, write to the Free Software Foundation, Inc.,
- *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+/* Android IMSI-Catcher Detector | (c) AIMSICD Privacy Project
+ * -----------------------------------------------------------
+ * LICENSE:  http://git.io/vki47 | TERMS:  http://git.io/vki4o
+ * -----------------------------------------------------------
  */
 
 /*
@@ -58,13 +26,8 @@ package com.SecUpwN.AIMSICD.service;
 
 import android.app.AlertDialog;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -76,16 +39,19 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.SecUpwN.AIMSICD.R;
-import com.SecUpwN.AIMSICD.adapters.AIMSICDDbAdapter;
 import com.SecUpwN.AIMSICD.rilexecutor.RilExecutor;
+import com.SecUpwN.AIMSICD.smsdetection.SmsDetector;
 import com.SecUpwN.AIMSICD.utils.Cell;
 import com.SecUpwN.AIMSICD.utils.GeoLocation;
 
+/**
+ *  Description:    This starts the (background?) AIMSICD service to check for SMS and track
+ *                  cells with or without GPS enabled.
+ *                  TODO: better and more detailed explanation!
+ */
 public class AimsicdService extends Service {
 
-    private final String TAG = "AIMSICD_Service";
-    //private final String TAG = "AIMSICD";
-    //private final String mTAG = "AimsicdService";
+    private static final String TAG = "AimsicdService";
 
     // /data/data/com.SecUpwN.AIMSICD/shared_prefs/com.SecUpwN.AIMSICD_preferences.xml
     public static final String SHARED_PREFERENCES_BASENAME = "com.SecUpwN.AIMSICD_preferences";
@@ -95,13 +61,14 @@ public class AimsicdService extends Service {
      * System and helper declarations
      */
     private final AimscidBinder mBinder = new AimscidBinder();
-    private final Handler timerHandler = new Handler();
+    private static final Handler timerHandler = new Handler();
 
     private CellTracker mCellTracker;
     private AccelerometerMonitor mAccelerometerMonitor;
     private SignalStrengthTracker signalStrengthTracker;
     private LocationTracker mLocationTracker;
     private RilExecutor mRilExecutor;
+    private SmsDetector smsdetector;
 
     private boolean isLocationRequestShowing = false;
 
@@ -117,6 +84,7 @@ public class AimsicdService extends Service {
         }
     }
 
+    @Override
     public void onCreate() {
 
         signalStrengthTracker = new SignalStrengthTracker(getBaseContext());
@@ -125,9 +93,21 @@ public class AimsicdService extends Service {
             @Override
             public void run() {
                 // movement detected, so enable GPS
-                mLocationTracker.start();
-                signalStrengthTracker.onSensorChanged();
 
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        timerHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mLocationTracker.start();
+                            }
+                        });
+                    }
+                };
+                new Thread(runnable).start();
+
+                signalStrengthTracker.onSensorChanged();
 
                 // check again in a while to see if GPS should be disabled
                 // this runnable also re-enables this movement sensor
@@ -154,6 +134,10 @@ public class AimsicdService extends Service {
         mLocationTracker.stop();
         mAccelerometerMonitor.stop();
         mRilExecutor.stop();
+
+        if (SmsDetector.getSmsDetectionState()) {
+            smsdetector.stopSmsDetection();
+        }
         Log.i(TAG, "Service destroyed.");
     }
 
@@ -198,19 +182,36 @@ public class AimsicdService extends Service {
         else mCellTracker.stopTrackingFemto();
     }
 
+    // SMS Detection Thread
+    public boolean isSmsTracking() {
+        return SmsDetector.getSmsDetectionState();
+    }
+
+    public void startSmsTracking() {
+        if(!isSmsTracking()) {
+            Log.i(TAG, "Sms Detection Thread Started");
+            smsdetector = new SmsDetector(this);
+            smsdetector.startSmsDetection();
+        }
+    }
+
+    public void stopSmsTracking() {
+        if(isSmsTracking()) {
+            smsdetector.stopSmsDetection();
+            Log.i(TAG, "Sms Detection Thread Stopped");
+        }
+    }
+
     // while tracking a cell, manage the power usage by switching off GPS if no movement
     private final Runnable batterySavingRunnable = new Runnable() {
         @Override
         public void run() {
             if (mCellTracker.isTrackingCell()) {
-                //Log.d("power", "Checking to see if GPS should be disabled");
                 // if no movement in a while, shut off GPS. Gets re-enabled when there is movement
                 if (mAccelerometerMonitor.notMovedInAWhile() ||
                         mLocationTracker.notMovedInAWhile()) {
-                    //Log.d("power", "Disabling GPS");
                     mLocationTracker.stop();
                 }
-
                 mAccelerometerMonitor.start();
             }
         }

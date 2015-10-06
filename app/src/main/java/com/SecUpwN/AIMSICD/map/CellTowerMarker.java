@@ -1,3 +1,8 @@
+/* Android IMSI-Catcher Detector | (c) AIMSICD Privacy Project
+ * -----------------------------------------------------------
+ * LICENSE:  http://git.io/vki47 | TERMS:  http://git.io/vki4o
+ * -----------------------------------------------------------
+ */
 package com.SecUpwN.AIMSICD.map;
 
 import android.app.AlertDialog;
@@ -13,7 +18,6 @@ import com.SecUpwN.AIMSICD.R;
 import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.OverlayItem;
 
 /**
  * BTS pin item
@@ -47,7 +51,7 @@ public class CellTowerMarker extends Marker {
      * more available items as explained in the related issue here:
      * https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/issues/234
      *
-     * Dependency:  marker_info_window.xml
+     * Dependency:
      *              MarkerData.java
      *              marker_info_window.xml
      *
@@ -56,7 +60,7 @@ public class CellTowerMarker extends Marker {
 
         TextView tv;
 
-        // Getting view from the layout file info_window_layout
+        // Getting view from the layout file:  marker_info_window.xml
         View v = LayoutInflater.from(mContext).inflate(R.layout.marker_info_window, null);
 
         if (v != null) {
@@ -67,24 +71,22 @@ public class CellTowerMarker extends Marker {
                     tr.setVisibility(View.VISIBLE);
                 }
 
-                tv = (TextView) v.findViewById(R.id.cell_id); // CID
+                tv = (TextView) v.findViewById(R.id.cell_id);   // CID
                 tv.setText(data.cellID);
-                tv = (TextView) v.findViewById(R.id.lac);  // LAC
+                tv = (TextView) v.findViewById(R.id.lac);       // LAC
                 tv.setText(data.lac);
-                tv = (TextView) v.findViewById(R.id.lat); // LAT
+                tv = (TextView) v.findViewById(R.id.lat);       // LAT
                 tv.setText(String.valueOf(data.lat));
-                tv = (TextView) v.findViewById(R.id.lng); // LON
+                tv = (TextView) v.findViewById(R.id.lng);       // LON
                 tv.setText(String.valueOf(data.lng));
-
-                // TODO replace MCC & MNC with PC:
-                //tv = (TextView) v.findViewById(R.id.mcc); // MCC
-                //tv.setText(data.getMCC());
-                //tv = (TextView) v.findViewById(R.id.mnc); // MNC
-                //tv.setText(data.getMNC());
-
-                tv = (TextView) v.findViewById(R.id.pc);  // MNC+MCC
+                // TODO: add PSC and RAT
+                //tv = (TextView) v.findViewById(R.id.psc);     // PSC
+                //tv.setText(data.getPSC());
+                //tv = (TextView) v.findViewById(R.id.rat);     // RAT
+                //tv.setText(data.getRAT());
+                tv = (TextView) v.findViewById(R.id.pc);        // PC = <MNC> "-" <MCC>
                 tv.setText(data.getPC());
-                tv = (TextView) v.findViewById(R.id.samples); // Samples
+                tv = (TextView) v.findViewById(R.id.samples);   // Samples
                 tv.setText(data.getSamples());
             }
         }
@@ -92,6 +94,7 @@ public class CellTowerMarker extends Marker {
         return v;
     }
 
+    // This displays the Marker info pop-up dialog window, with OK button.
     public class OnCellTowerMarkerClickListener implements OnMarkerClickListener {
         @Override
         public boolean onMarkerClick(Marker marker, MapView mapView) {

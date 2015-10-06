@@ -2,7 +2,10 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:overScrollMode="never"
+    android:fadingEdgeLength="0dp">
+
 
     <LinearLayout
         android:id="@+id/aboutView"
@@ -30,6 +33,16 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/buildozer_buildnumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/buildozer_buildnumber"
+            android:textColor="@color/red_text"
+            android:textSize="16sp"
+            android:visibility="gone"/>
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/small_padding"
@@ -41,11 +54,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Click Status Icons below for Detailed Information"
+            android:text="@string/about_desc_icon_title"
             android:textColor="@color/green_text"
             android:id="@+id/textView2"
             android:gravity="center_vertical|center_horizontal"
-            android:textSize="14dp" />
+            android:textSize="14sp" />
 
         <TableLayout
             android:id="@+id/aimsicd_status_icons"
@@ -72,7 +85,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:paddingLeft="@dimen/small_padding"
-                    android:text="Idle / Loading."/>
+                    android:text="@string/about_desc_icon_idle"/>
 
                 <ImageView
                     android:layout_width="48dp"
@@ -86,7 +99,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:paddingLeft="@dimen/small_padding"
-                    android:text="Active tracking close to you!"/>
+                    android:text="@string/about_desc_icon_active_tracking_near"/>
             </TableRow>
 
             <TableRow
@@ -106,7 +119,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:paddingLeft="@dimen/small_padding"
-                    android:text="Everything OK."/>
+                    android:text="@string/about_desc_icon_ok"/>
 
                 <ImageView
                     android:layout_width="48dp"
@@ -120,7 +133,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:paddingLeft="@dimen/small_padding"
-                    android:text="You are being tracked down!"/>
+                    android:text="@string/about_desc_icon_tracked_down"/>
             </TableRow>
 
             <TableRow
@@ -140,7 +153,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:paddingLeft="@dimen/small_padding"
-                    android:text="Insecure Service Area. Leave it!"/>
+                    android:text="@string/about_desc_icon_insecure_area"/>
 
                 <ImageView
                     android:layout_width="48dp"
@@ -154,24 +167,32 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:paddingLeft="@dimen/small_padding"
-                    android:text="RUN! Handset manipulated!"/>
+                    android:text="@string/about_desc_icon_run"/>
             </TableRow>
 
         </TableLayout>
 
-        <Button
-            android:id="@+id/aimsicd_contribute_link"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/about_github"
-            android:textSize="14dp" />
+            android:orientation="horizontal">
+            
+            <Button
+                android:id="@+id/aimsicd_github_link"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/about_github"
+                android:textSize="14sp" />
 
-        <Button
-            android:id="@+id/aimsicd_wiki_link"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/about_wiki"
-            android:textSize="14dp" />
+            <Button
+                android:id="@+id/aimsicd_wiki_link"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/about_wiki"
+                android:textSize="14sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -179,22 +200,22 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/aimsicd_poc_link"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:singleLine="true"
-                android:ellipsize="start"
-                android:text="@string/about_poc"
-                android:textSize="14dp" />
-
-            <Button
                 android:id="@+id/aimsicd_disclaimer_link"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/about_disclaimer"
-                android:textSize="14dp" />
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/aimsicd_contribute_link"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:ellipsize="start"
+                android:text="@string/about_contribute"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -208,7 +229,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/about_releases"
-                android:textSize="14dp" />
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/aimsicd_changelog_link"
@@ -216,7 +237,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/about_changelog"
-                android:textSize="14dp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -230,7 +251,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/about_license"
-                android:textSize="14dp" />
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/aimsicd_credits_link"
@@ -238,7 +259,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/about_credits"
-                android:textSize="14dp" />
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

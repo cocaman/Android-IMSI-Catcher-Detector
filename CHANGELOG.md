@@ -1,6 +1,627 @@
 # CHANGELOG of 'AIMSICD'
 ----------------------
 
+#### [20.09.2015 - WIP-Release v0.1.35-alpha-build-00](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/releases/tag/v0.1.35-alpha-b00)
+
+* Changed: Improved code quality and better error handling
+* Added: Animated updates on "Phone/SIM Details" page
+* Fixed: Resolved many security and performance issues [[#613](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/pull/613)]
+
+#### 16.09.2015 - WIP-Internal v0.1.33-alpha-build-01
+
+* Updated: Old formatting updates for cleaner code structure
+* Added: Database support for BtsLoc table in `aimsicd.db`
+* Added: Translations for Japanese, Albanian, Spanish and Polish
+
+#### [09.08.2015 - WIP-Release v0.1.34-alpha-build-00](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/releases/tag/v0.1.34-alpha-b00)
+
+* Updated: Finally found a **WHISTLEBLOWER**, removed position from [SEEKING](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/blob/HEAD/CONTRIBUTING.md#seeking) ;-)
+* Added: New language translation into Dutch
+
+---
+
+#### 06.08.2015 - WIP-Internal v0.1.33-alpha-build-02
+
+* Updated: Cleaned up marker info layout (needs more items and work to be done)
+
+---
+
+#### 05.08.2015 - WIP-Internal v0.1.33-alpha-build-01
+
+* Updated: `SmsDetector` is now using `toEventLog()`, fixed typo in `toEventlog`
+* Added: Simplified placeholder for `insertEventLog` in `AIMSICDDbAdapter.java`
+* Moved: Vibration code now resides in `toEventLog` for better maintainance
+
+---
+
+#### [02.08.2015 - WIP-Release v0.1.33-alpha-build-00](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/releases/tag/v0.1.33-alpha-b00)
+
+* Updated: Minor formatting of `dbe_import_items.xml` and `detection_sms_db_listview.xml`
+* Updated: Improved `.gitignore` to ignore Android Studio Navigation editor temp files
+* Updated: Improved Japanese and German translations, comments for `Helpers.java`
+* Updated: Refactored string for Type-0 SMS in `aimsicd.db` to improve its detection
+* Added: Implemented `rej_cause` into `DBe_import` and updated existing comments 
+* Added: ProgressBar and updated SQL for `DBcheck()` in `AIMSICDDbAdapter.java`
+* Fixed: Made ProgressBar in `AIMSICDDbAdapter.java` and logs work again
+
+---
+
+#### 01.08.2015 - WIP-Internal v0.1.32-alpha-build-21
+
+* Reverted: Removed code for rechecking cell after OCID download after failed tests
+* Updated: Refreshed Inflater data and comments in `DbViewerFragment.java`
+* Fixed: Re-implemented possibility to delete and reset the internal database
+* Fixed: Corrected typos in language source file `translatable_strings.xml`
+* Fixed: Improved comments and `cleanseCellTable` in `CellTracker.java`
+* Fixed: Corrected many layout Issues of XML for `DbViewerFragment.java`
+
+---
+
+#### 31.07.2015 - WIP-Internal v0.1.32-alpha-build-20
+
+* Updated: Improved formatting of `AIMSICD.java`, `AIMSICDDbAdapter.java` and `Cell.java`
+* Updated: Cleanup of `CellTracker.java`, consider removing old FemtoCell detection code
+* Added: Implemented code for rechecking cell after OCID download (needs intensive testing)
+
+---
+
+#### 31.07.2015 - WIP-Internal v0.1.32-alpha-build-19
+
+* Removed: Purged `CID -1` from EventLog, updated comments in `AIMSICDDbAdapter.java`
+* Added: New restart of `AIMSICDDbAdapter` after deleting the internal database
+* Fixed: Ordered navigation drawer and removed unused imports and attributes
+
+---
+
+#### 30.07.2015 - WIP-Internal v0.1.32-alpha-build-18
+
+* Added: Vibration on no nc_list detection as well as many comments and formatting
+
+---
+
+#### 30.07.2015 - WIP-Internal v0.1.32-alpha-build-17
+
+* Added: New `insertEventLog` query to prevent duplicates in the EvenLog table
+
+---
+
+#### 30.07.2015 - WIP-Internal v0.1.32-alpha-build-16
+
+* Updated: Refreshed comments and fixed a few minor typos in several source files
+
+---
+
+#### 30.07.2015 - WIP-Internal v0.1.32-alpha-build-15
+
+* Changed: Placed `DF_id` and `DF_desc` on separate lines for easier log reading
+* Fixed: Refreshed EventLog DBE and formatting to use standard TableLayout
+* Fixed: Reformatted `DBTableColumnIds.java` and `DbViewerFragment.java`
+
+---
+
+#### 30.07.2015 - WIP-Internal v0.1.32-alpha-build-14
+
+* Fixed: Corrected several DBV Issues, removed old unused and commented out code
+
+---
+
+#### 30.07.2015 - WIP-Internal v0.1.32-alpha-build-13
+
+* Removed: Purged ProgressBar calls when not visible (e.g. reading/writing CSVs)
+* Fixed: Ordered navigation drawer and removed unused imports and attributes
+* Fixed: Corrected defaultlocations layout and fixed BTS Measurements in DBV
+* Fixed: Corrected typo of `T3212` incorrectly labeled as `T3213`
+
+---
+
+#### 29.07.2015 - WIP-Internal v0.1.32-alpha-build-12
+
+* Changed: 2nd attempt to fix FC in DBV by commenting out `bb_power` in all files
+* Updated: Notes and comments in `AIMSICDDbAdapter.java` have been renewed
+* Added: Clarified difference between CellId and CID in `AIMSICDDbAdapter.java`
+* Fixed: Corrected build error in `BtsMeasureCardInflater.java`
+* Fixed: Corrected Log exceptions to use `.toString()`
+
+---
+
+#### 27.07.2015 - WIP-Internal v0.1.32-alpha-build-11
+
+* Fixed: Corrected BTS Measurements and defaultlocations DBV layout 
+
+---
+
+#### 27.07.2015 - WIP-Internal v0.1.32-alpha-build-10
+
+* Changed: Failed attempt to add "item" number to table layout
+* Updated: Comments added, updated and removed in several files
+* Fixed: Now showing `Unique BTS Data` items as intended in DBV
+* Fixed: Corrected typo of `T3212` incorrectly labeled as `T3213`
+
+---
+
+#### 26.07.2015 - WIP-Internal v0.1.32-alpha-build-09
+
+* Updated: Improved Japanese and Czech language translations (needs contributors)
+* Fixed: OCID download now respects the filter for `MCC`, `MNC` and `LAC` again
+* Fixed: Corrected spelling error to the correct display `DOWNLOAD_LOCAL_BTS_DATA`
+
+---
+
+#### 23.07.2015 - WIP-Internal v0.1.32-alpha-build-08
+
+* Updated: Improved German language translations
+* Added: New `DeviceApi18.java` to counteract wrong API for WCDMA cell info
+* Fixed: API build versions issues for network related items has been resolved
+* Fixed: Layout problems with new DBV xml style sheet have been resolved
+
+---
+
+#### 21.07.2015 - WIP-Internal v0.1.32-alpha-build-07
+
+* Removed: Purged outdated `OCIDResponse.java` since no longer needed
+* Changed: Attempt to reduze the font size in the DB viewer for the `DBe_import`
+* Changed: Restructured `dbe_import_items.xml` for easier readbility to our users
+* Changed: New color scheme within `dbe_import_items.xml` for cleaner overview
+* Changed: Reversed logic code for `isExact`, changable on where data is imported
+* Updated: Comments in `DBTableColumnIds.java` and `SignalStrengthTracker.java`
+* Updated: TAGs and comments in `SmsDetector.java` are now reflecting current state
+* Updated: Cleaned `DbeImportCardInflater.java` and `detection_sms_db_listview.xml`
+* Updated: Improvement to SMS detection of WAP Push SMS messages with a new string
+* Updated: TAGs in `AIMSICDDbAdapter.java` and formatting of `DbViewerFragment.java`
+* Added: New server response codes in OpenCellIdActivity.java, removed old comments
+* Added: New EventLog for changing `LAC` in GSM case (only had it in CDMA until now)
+* Added: Minor comments in `DbViewerFragment.java` to clarify even more table data
+* Added: More notes and TAGs to work on for `AimsicdService.java` and `Cell.java`
+* Fixed: Downgrade of `targetSdkVersion` to `19` fixing whitish Icons on Android 5+
+* Fixed: Repaired `CellTracker` polling neighbouring cells on unsupported phones
+* Fixed: Repaired switched `LAC`/`CID` vs data labels of DBV in `DBe_import` table
+* Fixed: Better comments, spellings and formatting in `AIMSICDDbAdapter.java`
+
+#### 17.07.2015 - WIP-Internal v0.1.32-alpha-build-06
+
+* Moved: `requestNewOCIDKey()` from `Celltracker` to `OpenCellIdActivity`
+* Fixed: Repaired OCID crash when getting key, better DBV layout for `DBe_ipmort`
+
+---
+
+#### 17.07.2015 - WIP-Internal v0.1.32-alpha-build-04
+
+* Updated: Minor changes to correct value for `avg_range` in `AIMSICDDbAdapter.java`
+* Updated: from `DBE_UPLOAD_REQUEST` to `RESTORE_DATABASE` in `RequestTask.java`
+* Added: New string for database restoration popup added in `RequestTask.java`
+* Fixed: `CellTracker` and `RequestTask` are now works along with our new database
+* Fixed: Comments in `CellTracker` have been answered to clarify current functionality
+
+---
+
+#### 16.07.2015 - WIP-Internal v0.1.32-alpha-build-03
+
+* Updated: Shuffling, commenting and formatting of `AIMSICDDbAdapter.java`
+
+---
+
+#### 14.07.2015 - WIP-Internal v0.1.32-alpha-build-02
+
+* Fixed: AIMSICD does not crash anymore when downloading OpenCellID data
+
+---
+
+#### 14.07.2015 - WIP-Internal v0.1.32-alpha-build-01
+
+* Changed: **[MAJOR DATABASE OVERHAUL](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/issues/215)** - huge THANKS flies out to [banjaxbanjo](https://github.com/banjaxbanjo)!
+* Changed: Our new database is now pre-compiled, faster, better and uses correct tables
+* Updated: Improved French and Polish, minor string changes for Database Viewer labels
+
+---
+
+#### [12.07.2015 - WIP-Release v0.1.32-alpha-build-00](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/releases/tag/v0.1.32-alpha-b00)
+
+* Updated: Enhanced `AIMSICD.java` for another attempt to fix AIMSICD not closing
+* Updated: French, Polish and Russian translations, added: Czech and Swedish
+* Updated: More updates of MWI detection strings with fixes to avoid failing build
+* Added: Small note in `CONTRIBUTING.md` to actually *finish* the started translations
+* Fixed: Reverted lacells pull request because it caused blockings and exceptions
+
+---
+
+#### 07.07.2015 - WIP-Internal v0.1.31-alpha-build-05
+
+* Changed: Switched Coverity Scan analysis to `master` to avoid Travis-CI failures
+* Updated: Improved French, German and Polish translations (needs more translators)
+* Fixed: Corrected Type-0 silent SMS popup display and tried to fix app not closing
+
+---
+
+#### 07.07.2015 - WIP-Internal v0.1.31-alpha-build-04
+
+* Updated: German translations have been improved upon changes in source strings
+* Fixed: Corrected MWI code and removed unnecessary spaces from detection popup
+
+---
+
+#### 07.07.2015 - WIP-Internal v0.1.31-alpha-build-03
+
+* Updated: German translations have been improved upon changes in source strings
+* Removed: Purged E-Mail address to send logfiles to - a better way will come soon!
+* Removed: Purged invitation to send logfiles for every single detection event
+
+---
+
+#### 07.07.2015 - WIP-Internal v0.1.31-alpha-build-02
+
+* Added: New table for detection tests of Type-0 silent SMS and MWI in [Special SMS](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/wiki/Special-SMS)
+* Fixed: Declared Message Waiting Indicator strings correctly in our detection code
+
+---
+
+#### 07.07.2015 - WIP-Internal v0.1.31-alpha-build-01
+
+* Updated: Enhanced Type-0 silent SMS detection with main buffer to logcat scraper
+* Updated: Translations via Weblate are now finally getting pulled in automatically
+* Updated: Thanked [thechangelog](https://github.com/thechangelog) in our `CREDITS` for their public announcements
+* Added: Translations into English, German, French, Polish, Japanese and Russian
+
+---
+
+#### [05.07.2015 - WIP-Release v0.1.31-alpha-build-00](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/releases/tag/v0.1.31-alpha-b00)
+
+* Removed: Commented out unused imports and re-ordered variable declarations
+* Updated: Shortened badge of `Development Status` in `README` for better display
+* Added: More clarifying code comments in `CellTracker.java`
+
+#### 05.07.2015 - WIP-Internal v0.1.30-alpha-build-16
+
+* Fixed: Cleanup of timestamp code in `MiscUtils.java`
+* Fixed: AIMSICD Status-Icons are now shown correctly in colored style on Android 5+
+
+
+---
+
+#### 04.07.2015 - WIP-Internal v0.1.30-alpha-build-14
+
+* Added: New Log items for MCC and MNC parameters when downloading OCID for debugging
+* Fixed: Reformatted 23 char limitation of Log TAG with our standard TAG, mTAG + "text"
+* Fixed: Corrected MiscUtils TAGs and nulls in CellTracker and improved some formatting
+* Fixed: Silenced even more XPrivacy logcat spam in DebugLogs
+
+---
+
+#### 03.07.2015 - WIP-Internal v0.1.30-alpha-build-13
+
+* Fixed: Comments in `RequestTask.java` have been fixed to reflect code changes
+* Fixed: Silenced some spammy XPrivacy items using `XPrivacy/XRuntime:S Xposed:S`
+
+---
+
+#### 03.07.2015 - WIP-Internal v0.1.30-alpha-build-12
+
+* Added: Weblate translations badge added to our `README` for people to see progress
+* Fixed: AIMSICD should now start again properly on previously complaining devices
+
+---
+
+#### 03.07.2015 - WIP-Internal v0.1.30-alpha-build-11
+
+* Updated: `CREDITS` now reflect the latest awesome additions by our new developers
+* Fixed: Small string fixes and translation improvements to move our new [Weblate](https://hosted.weblate.org/projects/aimsicd/strings/).
+
+---
+
+#### 03.07.2015 - WIP-Internal v0.1.30-alpha-build-10
+
+* Fixed: Now truncating measured and used Lat/Lon GPS coordinates in `LocationTracker`
+
+---
+
+#### 27.06.2015 - WIP-Internal v0.1.30-alpha-build-09
+
+* Changed: Timeout value in `RequestTask.java` has been increased to 80 seconds
+* Fixed: Repaired OCIDCSV parsing which obviously temporarily broke during development
+
+---
+
+#### 27.06.2015 - WIP-Internal v0.1.30-alpha-build-08
+
+* Added: Buildozer Buildnumber to has been added to About View for development builds
+
+---
+
+#### 26.06.2015 - WIP-Internal v0.1.30-alpha-build-07
+
+* Changed: mTAG has been changed as requested to `SamsungMulticlientRilExecutor`
+* Added: Small warning within code to not remove commented out stuff without prior asking
+
+---
+
+#### 25.06.2015 - WIP-Internal v0.1.30-alpha-build-06
+
+* Updated: Log calls updated to common TAGs, added doublepoints and removed whitespaces
+
+---
+
+#### 25.06.2015 - WIP-Internal v0.1.30-alpha-build-05
+
+* Changed: Customized build script in `.travis.yml` to override CoverityScan limits
+* Changed: Made toast property static and non-final, splitting toast creation for `msgShort`
+* Removed: Commented out `LeakCanary` until this libray has reived some code improvemens
+* Fixed: Toasts are now displayed in the ccorrect position and duration to really read them
+
+---
+
+#### 24.06.2015 - WIP-Internal v0.1.30-alpha-build-04
+
+* Added: Toasts are now being cancelled on new toast to prevent overlapping of toasts
+
+---
+
+#### 24.06.2015 - WIP-Internal v0.1.30-alpha-build-03
+
+* Fixed: Info box toasts are now shown longer by adding a new singleton toaster
+
+---
+
+#### 23.06.2015 - WIP-Internal v0.1.30-alpha-build-02
+
+* Changed: Context property changed to `appContext` in `DrawerMenuAdapter.java`
+* Removed: Purged `this` prefix of `appContext` as it is not needed anymore
+
+---
+
+#### 23.06.2015 - WIP-Internal v0.1.30-alpha-build-01
+
+* Changed: Help toast has been changed to long toast in `DrawerMenuAdapter.java`
+
+---
+
+#### [21.06.2015 - WIP-Release v0.1.30-alpha-build-00](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/releases/tag/v0.1.30-alpha-b00)
+
+* Updated: Refactored OpenCellId activity for better code quality and error handling
+* Updated: A few more wording improvements for our `README` and additions in `CREDITS`
+* Changed: Removed references and links to organizations not supporting our project
+* Changed: Improved `LOGTAG` to use proper class name `SmsDetectionDbHelper`
+* Added: Refresh Rate is now shown on menu entry in `Preferences` without opening it
+* Fixed: Made buttons in `About` menu reappear and fixed code for shrinked buttons
+* Fixed: Resolved reappearance of too many unnecessary database open/close operations
+
+---
+
+#### 17.06.2015 - WIP-Internal v0.1.29-alpha-build-06
+
+* Updated: Slight translation updates of strings due to previous menu changes
+* Changed: Removed unused imports and shrinked some buttons in `About` menu
+* Fixed: Resolved UI Issue in `Database Viewer` and corrected button link naming
+
+---
+
+#### 17.06.2015 - WIP-Internal v0.1.29-alpha-build-05
+
+* Changed: Removed old copyright and code of unused Femtocell toggle button
+* Added: New `logcatTimeStampParser` for friendly timestamp from a logcat string
+* Fixed: Endlessly receiving the same detected SMS has finally come to an end
+* Fixed: Exception on UI and database has been fixed (possibly just tentative)
+
+---
+
+#### 16.06.2015 - WIP-Internal v0.1.29-alpha-build-04
+
+* Updated: Better RIL/API support with refreshed `ServiceMode` parser
+* Updated: Increased timeout of OCID download to avoid retrieval errors
+* Added: New feature to read OCID data from generated [lacells.db](https://github.com/n76/Local-GSM-Backend) as well
+* Fixed: Resolved WIN DEATH when using Advanced User Preferences
+* Fixed: Startup crash fixed with `Lat` and `Lng` in `AIMSICDDbAdapter.java`
+
+--- 
+
+#### 12.06.2015 - WIP-Internal v0.1.29-alpha-build-03
+
+* Changed: Moved hardcoding of OCDB download path to static variable
+* Updated: Refactored OCID CSV parsing and truncated GPS coordinates
+
+---
+
+#### 09.06.2015 - WIP-Internal v0.1.29-alpha-build-02
+
+* Updated: Improved menu translations in `Navigation Drawer` for better understanding
+
+---
+
+#### 08.06.2015 - WIP-Internal v0.1.29-alpha-build-01
+
+* Removed: Purged unused imports and unnecessary `toString` calls
+* Removed: Purged public modifier from interface methods
+* Changed: Switched CoverityScan analysis to branch `development` to analyze current code
+* Changed: Replaced deprecated `GridMarkerClusterer` with `RadiusMarkerClusterer`
+* Changed: Closed some database cursors and replaced `dp` with `sp` for TextViews
+* Updated: License header has been unified across all source files to ensure proper GPL
+* Updated: Refactored `AIMSICDDbAdapter::DbHelper#onCreate` for easier reading
+* Updated: Refactored redundant parsing from get OCID API request
+* Added: Default `locale` has been implemented into `SimpleDateFormat` constructor
+* Added: Now using parent view instead of null when inflating layouts
+* Added: French translations as well as `leakcanary` analysis for detecting leaks
+* Fixed: Minor translation and punctuation improvements in several translation string files
+* Fixed: Corrected filename of CSV loaded in into `AIMSICDDbAdapter#updateOpenCellID`
+
+---
+
+#### [31.05.2015 - WIP-Release v0.1.29-alpha-build-00](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/releases/tag/v0.1.29-alpha-b00)
+
+* Added: New WAP Push Detection and corresponding popup as well as custom strings
+* Added: All detection strings will now be added to and loaded from `det_strings.json`
+* Fixed: Small typos in German translation removed, shortened OCID notifications
+
+---
+
+#### 28.05.2015 - WIP-Internal v0.1.28-alpha-build-03
+
+* Changed: Many German translation improvements for much easier understanding
+* Removed: SMS Detection `try` has been purged since it was not needed anymore
+* Updated: Improvements across all translation files for better display of notifications
+* Updated: SMS Detection improved and moved some functions in `CustomPopUp.java`
+* Updated: Moved some Detection functions to `MiscUtils` and added minor comments
+* Moved: Untranslatable strings have been removed from all existing translation files
+* Fixed: Padding issue displaying detected SMS only partially has been resolved
+
+---
+
+#### 27.05.2015 - WIP-Internal v0.1.28-alpha-build-02
+
+* Added: Translations into German have been started, many string improvements
+
+---
+
+#### 25.05.2015 - WIP-Internal v0.1.28-alpha-build-01
+
+* Added: New SMS Detection to detect tracking via silent SMS and silent Voice ;-)
+* Added: New WIKI entry on how to test your own detection strings in [Special SMS](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/wiki/Special-SMS)
+
+---
+
+#### [24.05.2015 - WIP-Release v0.1.28-alpha-build-00](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/releases/tag/v0.1.28-alpha-b00)
+
+* Updated: `CREDITS` now reflect the latest contributions by our developers
+* Changed: Tables in the `Database Viewer` will now be loaded automatically
+* Added: New overlay BTS map legend now clarifies meanings of the map pins
+
+---
+
+#### 22.05.2015 - WIP-Internal v0.1.27-alpha-build-03
+
+* Moved: App data as been moved to new location (will update automatically)
+
+---
+
+#### 21.05.2015 - WIP-Internal v0.1.27-alpha-build-02
+
+* Fixed: Strange NPE related to `TelephonyManager.getNeighboringCellInfo()`
+
+---
+
+#### 15.05.2015 - WIP-Internal v0.1.27-alpha-build-01
+
+* Changed: Links within our app have been changed to permanent `HEAD` links
+* Added: Donations to encourage developers are now possible via [Bountysource](https://www.bountysource.com/teams/android-imsi-catcher-detector/issues)
+
+---
+
+#### [10.05.2015 - WIP-Release v0.1.27-alpha-build-00](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/releases/tag/v0.1.27-alpha-b00)
+
+* Removed: Buggy `Toast Extender` for making toasts last longer than 3.5 seconds
+* Changed: Releases will now be published every Sunday to ease developers lifes
+* Moved: `DATABASE.md` has been moved into section `Technical Details` in WIKI
+* Fixed: Shout-out to @DimaKoz who cleared the mess done with `Toast Extender`
+* Fixed: Huge thanks to @banjaxbanjo for correctly implementing toast expansion
+
+---
+
+#### 06.05.2015 - WIP-Internal v0.1.26-alpha-build-04
+
+* Added: Implemented ability to erase the database through `Navigation Drawer`
+
+---
+
+#### 05.05.2015 - WIP-Internal v0.1.26-alpha-build-03
+
+* Updated: Tried to increase the version of the support library (now reverted)
+* Updated: Synced `buildToolsVersion` with dependencies for better support
+* Updated: Unified and resized copyright header within several source files
+* Added: Green checkmark now appears when pressing the toggle buttons
+* Added: Included AppCompat library in attempt to heal broken Buildozer builds
+* Fixed: Purged bug with doubling (and tripling, etc.) markers on the map
+
+---
+
+#### 02.05.2015 - WIP-Internal v0.1.26-alpha-build-02
+
+* Updated: More improvements of the Russian translations
+* Updated: Markers of cell towers are now drawn as immediately as possible
+* Added: Progress spinner shows on OCID download in `Antenna Map Viewer`
+* Fixed: Memory leaks and other warnings were partially eliminated
+
+---
+
+#### 02.05.2015 - WIP-Internal v0.1.26-alpha-build-01
+
+* Updated: Translation into Russian has been improved
+
+---
+
+#### [01.05.2015 - WIP-Release v0.1.26-alpha-build-00](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/releases/tag/v0.1.26-alpha-b00)
+
+* Updated: Added [agilob](https://github.com/agilob) and [DimaKoz](https://github.com/DimaKoz) into our `CREDITS` for their awesome work
+* Updated: Improved descriptions of menu and removed unused resources and a dot
+* Updated: Translation instructions have been updated to reflect the latest procedure
+* Changed: Intensified warning for dropped support for logfiles without a description
+* Added: Translation into Russian has been started, improved Polish translations
+* Fixed: Nuked error in Database Viewer getting data in languages other than English
+* Fixed: Corrected spelling of string name and added small screen improvements
+
+---
+
+#### 27.04.2015 - WIP-Internal v0.1.25-alpha-build-47
+
+* Changed: Transformed more strings for translation, some cosmetic changes in java code
+* Changed: Merged `arrays.xml` to `strings.xml` (in `values-XX`) for easier translations
+* Changed: Merged helpers to `strings.xml` and improved polish translation even more
+* Changed: Files of resources were renamed properly, 'about' fragment has been changed
+* Removed: Deleted unused imports (done automatically by Android Studio) and resources
+* Added: Task `lintVitalRelease` has been added into `.travis.yml` for clean checks
+
+---
+
+#### 26.04.2015 - WIP-Internal v0.1.25-alpha-build-46
+
+* Updated: Some updates to the translation instructions, a few more changes to come
+* Updated: Version of library `slf4j-android` as well as `README` have been updated
+* Changed: Re-ordered menu to a preferred layout in conjunction with UI/UX redesign
+* Added: New Info-Buttons for getting help from within our app and without internet
+* Added: Component `extra-android-m2repository` has been added to `.travis.yml`
+* Fixed: NPE on `tm.getNeighboringCellInfo()` when neighboring cell is `null`
+* Fixed: Progress bar is now showing correctly again and does not overlap things
+* Fixed: Errors with strings after running `lintVitalRelease` in Gradle were fixed
+
+---
+
+#### 23.04.2015 - WIP-Internal v0.1.25-alpha-build-45
+
+* Added: Translation instructions have been added and updated in `CONTRIBUTING.md`
+* Fixed: Clarified examples in EventLog and DB Viewer with red `EXAMPLE!` warning
+
+---
+
+#### 23.04.2015 - WIP-Internal v0.1.25-alpha-build-44
+
+* Changed: Moved strings from a few classes and from `array.xml` to `strings.xml`
+* Added: Enabled app to be translatable and start up in users native system language
+* Added: Polish translation and empty `values-de` folder for German language files
+* Fixed: Re-labelled BTS pin-info samples as "0" when being empty (BLUE)
+
+---
+
+#### 21.04.2015 - WIP-Internal v0.1.25-alpha-build-43
+
+* Updated: Version of the `osmbonuspack` library for maps has been updated
+* Fixed: Ability of caching the tiles has been switched on, fixed slow speed
+
+---
+
+#### 21.04.2015 - WIP-Internal v0.1.25-alpha-build-42
+
+* Updated: Compressed all Images and Icons to make our app even smaller
+* Changed: Moved progress bar to overlay content and made it visible for debugging
+* Added:  Included methods to show and the hide progress bar and added test
+
+---
+
+#### 18.04.2015 - WIP-Internal v0.1.25-alpha-build-41
+
+* Updated: `CREDITS` have been updated with the wonderful BFG Repo-Cleaner
+* Removed: Purged `NeighboringCellMonitor.java` since we don't need it anymore
+* Changed: Moved check LAC code into `compareLac()` to check on every cell change
+* Changed: Moved check from `updateNeighbouringCells` to `checkForNeighbourCells()`
+* Fixed: Neighbouring cell list is now also updated outside the MapViewer
+
+---
+
 #### 17.04.2015 - WIP-Internal v0.1.25-alpha-build-40
 
 * Updated: We've completely cleaned our GitHub repo. **Please re-fork us now!**

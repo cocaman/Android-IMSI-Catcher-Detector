@@ -12,9 +12,21 @@ Feel invited to develop with us using these steps:
 3. Pick [an Issue](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/issues) you'd like to work on. Introduce yourself in that Issue.
 4. Work on resolving the Issue you picked using your local code copy.
 5. Add [Code Comments](https://source.android.com/source/code-style.html#java-style-rules) for documentation and follow our [Style Guide](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/wiki/Style-Guide).
-6. Test your changes and submit a [pull request](https://help.github.com/articles/using-pull-requests/) when we shall add it.
-7. Monitor our [Current Development Status and Development Cycle](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/wiki/Development-Status).
-8. Don't be shy to ask if you need help. Ask in your Issue or [contact us](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/wiki/Contact).
+6. Increase the build number `*-alpha-bXX` in `android:versionName`.
+7. Test your changes and submit a [pull request](https://help.github.com/articles/using-pull-requests/) when we shall add it.
+8. Monitor our [Current Development Status and Development Cycle](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/wiki/Development-Status).
+9. Don't be shy to ask if you need help. Ask in your Issue or [contact us](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/wiki/Contact).
+
+---
+
+#### TRANSLATING
+
+Let our app start up in your native language!
+
+* See [our translations](https://hosted.weblate.org/projects/aimsicd/strings/) and login via [GitHub](https://hosted.weblate.org/accounts/login/github/?next=/projects/aimsicd/strings/) or [others](https://hosted.weblate.org/accounts/login/?next=/projects/aimsicd/strings/) to add yours.
+* When translating, keep small device screens in mind. Shorten it.
+* Please make sure to finish all translations as best as possible.
+* Translations will be pulled into our GitHub automatically. Enjoy!
 
 ---
 
@@ -30,13 +42,20 @@ Can't code (yet)? No problem, we love you too!
 
 ---
 
+#### DONATING
+
+Thank you for encouraging our developers!
+
+* Feel invited to donate using [this guide](https://github.com/SecUpwN/Android-IMSI-Catcher-Detector/wiki/Donations).
+
+---
+
 #### SEEKING
 
 Special positions we are currently seeking skilled people for:
 
-* People with equipment to verify our app (e.g. OpenBTS).
+* People with a CryptoPhone for double app verification.
 * Fixing the identified [Coverity Scan Defects](https://scan.coverity.com/projects/3346) of our app.
-* Whistleblower working for an IMSI-Catcher producer.
 
 ---
 

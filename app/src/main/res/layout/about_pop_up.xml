@@ -25,7 +25,7 @@
                 android:id="@+id/tv_popup_title"
                 android:gravity="center_vertical|center_horizontal"
                 android:textColor="@color/green_text"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp" />
         </TableLayout>
@@ -53,7 +53,6 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Status\tIdle"
                     android:id="@+id/about_tv_status"
                     android:layout_weight="1"
                     android:gravity="center_vertical|center_horizontal"
@@ -63,8 +62,8 @@
         </TableLayout>
 
         <TableLayout
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1.13">
 
             <TableRow
@@ -77,12 +76,11 @@
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="App is idling or loading. No protection and detection measures are enabled. Please open the Navigation Drawer and enable them in section TRACKING."
                     android:id="@+id/about_tv_data"
                     android:layout_weight="1"
                     android:paddingLeft="2dp"
                     android:paddingRight="2dp"
-                    android:textSize="16dp" />
+                    android:textSize="16sp" />
             </TableRow>
         </TableLayout>
 

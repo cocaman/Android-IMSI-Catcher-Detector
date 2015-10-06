@@ -15,8 +15,6 @@
  */
 package com.SecUpwN.AIMSICD.rilexecutor;
 
-import com.SecUpwN.AIMSICD.BuildConfig;
-
 import android.annotation.SuppressLint;
 import android.net.LocalSocket;
 import android.net.LocalSocketAddress;
@@ -33,38 +31,31 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-
+/**
+ *      Description:
+ *
+ *      ChangeLog:
+ *
+ *      2015-07-14      E:V:A       Re-enabled code for preventing use on wrong devices, added mTAG
+ */
 public class SamsungMulticlientRilExecutor implements OemRilExecutor {
 
-    public static final String MULTICLIENT_SOCKET = "Multiclient";
-    public static final String SOCKET_NAME_RIL = "rild";
-
+    private static final String TAG = "SamsungMulticlientRil";
+    private static final String MULTICLIENT_SOCKET = "Multiclient";
     private static final int RIL_REQUEST_OEM_RAW = 59;
     private static final int RIL_REQUEST_OEM_STRINGS = 60;
-    public static final int RIL_CLIENT_ERR_SUCCESS = 0;
-    public static final int RIL_CLIENT_ERR_AGAIN = 1;
-    public static final int RIL_CLIENT_ERR_INIT = 2;
-    public static final int RIL_CLIENT_ERR_INVAL = 3;
-    public static final int RIL_CLIENT_ERR_CONNECT = 4;
-    public static final int RIL_CLIENT_ERR_IO = 5;
-    public static final int RIL_CLIENT_ERR_RESPONSE = 6;
-    public static final int RIL_CLIENT_ERR_UNKNOWN = 7;
+    private static final int RIL_CLIENT_ERR_SUCCESS = 0;
     private static final int RESPONSE_SOLICITED = 0;
     private static final int RESPONSE_UNSOLICITED = 1;
     private static final int ID_REQUEST_AT_COMMAND = 5;
     private static final int ID_RESPONSE_AT_COMMAND = 104;
 
-    // E:V:A:  2014-12-19  We need debugging on, until further notice.
+    // If you need debugging on, for testing on toher devices, change here.
     //  WARNING: Could fill your logcat if running app long!
     // private static final boolean DBG = BuildConfig.DEBUG;
     private static final boolean DBG = false;
 
-    // TODO: EVA: We should add AIMSICD to this TAG
-    private static final String TAG = SamsungMulticlientRilExecutor.class.getSimpleName();
     private volatile LocalSocketThread mThread;
-
-    public SamsungMulticlientRilExecutor() {
-    }
 
     @Override
     public DetectResult detect() {
@@ -76,27 +67,28 @@ public class SamsungMulticlientRilExecutor implements OemRilExecutor {
             Method method = clazz.getDeclaredMethod("get", String.class, String.class);
             gsmVerRilImpl = (String) method.invoke(null, "gsm.version.ril-impl", "");
         } catch (Exception ignore) {
-            ignore.printStackTrace();
+            Log.d(TAG, "ignore this exception?", ignore);
         }
 
         // E:V:A comment out for debugging purposes on other non-Samsung RILS
         // and moved gsm.version.. to catch...
         // WARNING may have bad consequences...
-        //if (!gsmVerRilImpl.matches("Samsung\\s+RIL\\(IPC\\).*")) {
-        //    return DetectResult.Unavailable("gsm.version.ril-impl = " + gsmVerRilImpl);
-        //}
+        if (!gsmVerRilImpl.matches("Samsung\\s+RIL\\(IPC\\).*")) {
+            return DetectResult.Unavailable("gsm.version.ril-impl = " + gsmVerRilImpl);
+        }
 
         LocalSocket s = new LocalSocket();
         try {
             s.connect(new LocalSocketAddress(MULTICLIENT_SOCKET));
         } catch (IOException e) {
+            Log.w(TAG, e.getMessage());
             return DetectResult.Unavailable(
                     "Multiclient socket is not available\n" + "gsm.version.ril-impl = " + gsmVerRilImpl);
         } finally {
             try {
                 s.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.getMessage(), e);
             }
         }
 
@@ -126,13 +118,13 @@ public class SamsungMulticlientRilExecutor implements OemRilExecutor {
     @Override
     public synchronized void invokeOemRilRequestRaw(byte[] data, Message response) {
         if (mThread == null) {
-            Log.e(TAG, "OEM raw request executor thread is not running");
+            Log.e(TAG, " OEM raw request executor thread is not running");
             return;
         }
         try {
             mThread.invokeOemRilRequestRaw(data, response);
         } catch (IOException ioe) {
-            Log.e(TAG, "invokeOemRilRequestRaw() error", ioe);
+            Log.e(TAG, "InvokeOemRilRequestRaw() error", ioe);
         }
     }
 
@@ -145,7 +137,7 @@ public class SamsungMulticlientRilExecutor implements OemRilExecutor {
         try {
             mThread.invokeOemRilRequestStrings(strings, response);
         } catch (IOException ioe) {
-            Log.e(TAG, "invokeOemRilRequestStrings() error", ioe);
+            Log.e(TAG, "InvokeOemRilRequestStrings() error", ioe);
         }
     }
 
@@ -199,10 +191,8 @@ public class SamsungMulticlientRilExecutor implements OemRilExecutor {
             byte req[] = marshallRequest(token, data);
 
             if (DBG) {
-                Log.v(TAG,
-                        String.format("invokeOemRilRequestRaw() token: 0x%X, header: %s, req: %s ",
-                                token, HexDump.toHexString(getHeader(req)),
-                                HexDump.toHexString(req))
+                Log.v(TAG, String.format("InvokeOemRilRequestRaw() token: 0x%X, header: %s, req: %s ",
+                    token, HexDump.toHexString(getHeader(req)),HexDump.toHexString(req))
                 );
             }
 
@@ -215,7 +205,7 @@ public class SamsungMulticlientRilExecutor implements OemRilExecutor {
                 throws IOException {
             int token;
             if (mMessages.size() > MAX_MESSAGES) {
-                Log.e(TAG, "message queue is full");
+                Log.e(TAG, "Message queue is full");
                 return;
             }
 
@@ -231,8 +221,7 @@ public class SamsungMulticlientRilExecutor implements OemRilExecutor {
             byte[] req = marshallRequest(token, strings);
 
             if (DBG) {
-                Log.v(TAG, String.format(
-                        "invokeOemRilRequestStrings() token: 0x%X, header: %s, req: %s ",
+                Log.v(TAG, String.format("InvokeOemRilRequestStrings() token: 0x%X, header: %s, req: %s ",
                         token, HexDump.toHexString(getHeader(req)), HexDump.toHexString(req)));
             }
 
@@ -243,7 +232,7 @@ public class SamsungMulticlientRilExecutor implements OemRilExecutor {
 
         private byte[] getHeader(byte data[]) {
             int len = data.length;
-            return new byte[]{
+            return new byte[] {
                     (byte) ((len >> 24) & 0xff),
                     (byte) ((len >> 16) & 0xff),
                     (byte) ((len >> 8) & 0xff),
@@ -314,6 +303,7 @@ public class SamsungMulticlientRilExecutor implements OemRilExecutor {
             mSocket = null;
             mInputStream = null;
             mOutputStream = null;
+            System.gc();
         }
 
         @Override
@@ -351,7 +341,7 @@ public class SamsungMulticlientRilExecutor implements OemRilExecutor {
 
                     int msgLen = (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | (buf[3] & 0xff);
                     if (msgLen + 4 > buf.length) {
-                        Log.e(TAG, "message to big. Length: " + msgLen);
+                        Log.e(TAG, "Message to big. Length: " + msgLen);
                         endpos = 0;
                         continue;
                     }
@@ -379,9 +369,8 @@ public class SamsungMulticlientRilExecutor implements OemRilExecutor {
             Parcel p;
 
             if (DBG) {
-
-                Log.v(TAG,
-                        "received " + length + " bytes: " + HexDump.toHexString(data, pos, length));
+                Log.v(TAG, "Received " + length + " bytes: " +
+                        HexDump.toHexString(data, pos, length));
             }
 
             p = Parcel.obtain();
@@ -417,7 +406,7 @@ public class SamsungMulticlientRilExecutor implements OemRilExecutor {
                 int err = p.readInt();
 
                 if (DBG) {
-                    Log.v(TAG, String.format("processSolicited() token: 0x%X err: %d", token, err));
+                    Log.v(TAG, String.format(": processSolicited() token: 0x%X err: %d", token, err));
                 }
 
                 if (err != RIL_CLIENT_ERR_SUCCESS) {
@@ -428,6 +417,7 @@ public class SamsungMulticlientRilExecutor implements OemRilExecutor {
                 stringsResponseData = p.createStringArray();
 
             } catch (Exception ex) {
+                Log.e(TAG, ex.getMessage());
                 errorEx = ex;
             }
 
@@ -459,9 +449,6 @@ public class SamsungMulticlientRilExecutor implements OemRilExecutor {
     }
 
     public static class RemoteException extends Exception {
-
-        public RemoteException() {
-        }
 
         public RemoteException(String detailMessage) {
             super(detailMessage);

@@ -1,3 +1,8 @@
+/* Android IMSI-Catcher Detector | (c) AIMSICD Privacy Project
+ * -----------------------------------------------------------
+ * LICENSE:  http://git.io/vki47 | TERMS:  http://git.io/vki4o
+ * -----------------------------------------------------------
+ */
 package com.SecUpwN.AIMSICD.utils;
 
 import android.content.Context;
@@ -8,39 +13,43 @@ import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 
+/**
+ * Description:     TODO
+ *
+ * Issues:
+ *              [ ] The use of wrong API for some calls in the cell tracker
+ *
+ * ChangeLog:
+ *              2015-07-23  E:V:A   Changed to use DeviceApi18.java instead of 17. Fix? of # 555
+ *                                  Do we need an import here??
+ *                                  import com.SecUpwN.AIMSICD.utils.DeviceApi18;
+ *
+ */
 public class Device {
 
-    private final String TAG = "AIMSICD";
-    private final String mTAG = "Device";
+    private final String TAG = "Device";
 
-    /*
-     * Device Declarations
-     */
     public Cell mCell;
-
     private int mPhoneID = -1;
-
-    private String mNetType = "";
-    private String mCellInfo = "";
-    private String mDataState = "";
-    private String mDataStateShort = "";
-    private String mNetName = "";
-    private String mMncmcc = "";
-    private String mSimCountry = "";
-    private String mPhoneType = "";
-    private String mIMEI = "";
-    private String mIMEIV = "";
-    private String mSimOperator = "";
-    private String mSimOperatorName = "";
-    private String mSimSerial = "";
-    private String mSimSubs = "";
-    private String mDataActivityType = "";
-    private String mDataActivityTypeShort = "";
+    private String mNetType;
+    private String mCellInfo;
+    private String mDataState;
+    private String mDataStateShort;
+    private String mNetName;
+    private String mMncmcc;
+    private String mSimCountry;
+    private String mPhoneType;
+    private String mIMEI;
+    private String mIMEIV;
+    private String mSimOperator;
+    private String mSimOperatorName;
+    private String mSimSerial;
+    private String mSimSubs;
+    private String mDataActivityType;
+    private String mDataActivityTypeShort;
     private boolean mRoaming;
 
     private Location mLastLocation;
-
-    private static final int TWO_MINUTES = 1000 * 60 * 2;
 
     /**
      * Refreshes all device specific details
@@ -55,7 +64,7 @@ public class Device {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             mNetType = getNetworkTypeName();
-            DeviceApi17.loadCellInfo(tm, mCell);
+            DeviceApi18.loadCellInfo(tm, this);
         }
 
         if (mCell == null)
@@ -63,8 +72,8 @@ public class Device {
 
         switch (mPhoneID) {
 
-            case TelephonyManager.PHONE_TYPE_NONE:  // Maybe bad!
-            case TelephonyManager.PHONE_TYPE_SIP:   // Maybe bad!
+            case TelephonyManager.PHONE_TYPE_NONE:
+            case TelephonyManager.PHONE_TYPE_SIP:
             case TelephonyManager.PHONE_TYPE_GSM:
                 mPhoneType = "GSM";
                 mMncmcc = tm.getNetworkOperator();
@@ -75,7 +84,7 @@ public class Device {
                         if (mCell.getMNC() == Integer.MAX_VALUE)
                             mCell.setMNC(Integer.parseInt(tm.getNetworkOperator().substring(3, 5)));
                     } catch (Exception e) {
-                        Log.i(TAG, mTAG + ":MncMcc parse exception - " + e.getMessage());
+                        Log.i(TAG, "MncMcc parse exception: ", e);
                     }
                 }
                 mNetName = tm.getNetworkOperatorName();
@@ -97,6 +106,8 @@ public class Device {
                         mCell.setCID(cdmaCellLocation.getBaseStationId());
                         mCell.setLAC(cdmaCellLocation.getNetworkId());
                         mCell.setSID(cdmaCellLocation.getSystemId()); // one of these must be a bug !!
+                        // See: http://stackoverflow.com/questions/8088046/android-how-to-identify-carrier-on-cdma-network
+                        // and: https://github.com/klinker41/android-smsmms/issues/26
                         mCell.setMNC(cdmaCellLocation.getSystemId()); // todo: check! (Also CellTracker.java)
 
                         //Retrieve MCC through System Property
@@ -109,7 +120,7 @@ public class Device {
                                 if (mCell.getMNC() == Integer.MAX_VALUE)
                                     mCell.setMNC(Integer.valueOf(homeOperator.substring(3, 5)));
                             } catch (Exception e) {
-                                Log.i(TAG, mTAG + ":homeOperator parse exception - " + e.getMessage());
+                                Log.i(TAG, "HomeOperator parse exception - " + e.getMessage(), e);
                             }
                         }
                     }
@@ -121,25 +132,18 @@ public class Device {
         int simState = tm.getSimState();
         switch (simState) {
 
-            case (TelephonyManager.SIM_STATE_ABSENT): break;
-            case (TelephonyManager.SIM_STATE_NETWORK_LOCKED): break;
-            case (TelephonyManager.SIM_STATE_PIN_REQUIRED): break;
-            case (TelephonyManager.SIM_STATE_PUK_REQUIRED): break;
-            case (TelephonyManager.SIM_STATE_UNKNOWN): break;
+            case (TelephonyManager.SIM_STATE_ABSENT):
+            case (TelephonyManager.SIM_STATE_NETWORK_LOCKED):
+            case (TelephonyManager.SIM_STATE_PIN_REQUIRED):
+            case (TelephonyManager.SIM_STATE_PUK_REQUIRED):
+            case (TelephonyManager.SIM_STATE_UNKNOWN):
+                break;
             case (TelephonyManager.SIM_STATE_READY): {
-
-                // Get the SIM country ISO code
                 mSimCountry = getSimCountry(tm);
-
                 // Get the operator code of the active SIM (MCC + MNC)
                 mSimOperator = getSimOperator(tm);
-
-                // Get the name of the SIM operator
                 mSimOperatorName = getSimOperatorName(tm);
-
-                // Get the SIM’s serial number
                 mSimSerial = getSimSerial(tm);
-
                 mSimSubs = getSimSubs(tm);
             }
         }
@@ -180,7 +184,7 @@ public class Device {
         } catch (Exception e) {
             // SIM methods can cause Exceptions on some devices
             mSimCountry = "N/A";
-            Log.e(TAG, mTAG + ":getSimCountry " + e);
+            Log.e(TAG, "GetSimCountry " + e);
         }
 
         if (mSimCountry.isEmpty()) {
@@ -212,7 +216,7 @@ public class Device {
         } catch (Exception e) {
             // SIM methods can cause Exceptions on some devices
             mSimOperator = "N/A";
-            Log.e(TAG, mTAG + ":getSimOperator " + e);
+            Log.e(TAG, "GetSimOperator " + e.getMessage(), e);
         }
 
         if (mSimOperator.isEmpty()) {
@@ -234,12 +238,12 @@ public class Device {
     String getSimOperatorName(TelephonyManager tm) {
         try {
             if (tm.getSimState() == TelephonyManager.SIM_STATE_READY) {
-                mSimOperatorName = (tm.getSimOperatorName() != null) ? tm.getSimOperatorName()
-                        : "N/A";
+                mSimOperatorName = (tm.getSimOperatorName() != null) ? tm.getSimOperatorName() : "N/A";
             } else {
                 mSimOperatorName = "N/A";
             }
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
             //SIM methods can cause Exceptions on some devices
             mSimOperatorName = "N/A";
         }
@@ -270,7 +274,7 @@ public class Device {
         } catch (Exception e) {
             //Some devices don't like this method
             mSimSubs = "N/A";
-            Log.e(TAG, mTAG + ":getSimSubs " + e);
+            Log.e(TAG, "GetSimSubs "+e.getMessage(), e);
         }
 
         if (mSimSubs.isEmpty()) {
@@ -300,7 +304,7 @@ public class Device {
         } catch (Exception e) {
             // SIM methods can cause Exceptions on some devices
             mSimSerial = "N/A";
-            Log.e(TAG, mTAG + ":getSimSerial " + e);
+            Log.e(TAG, "GetSimSerial " + e);
         }
 
         if (mSimSerial.isEmpty()) {
@@ -484,6 +488,7 @@ public class Device {
         int direction = tm.getDataActivity();
         mDataActivityTypeShort = "un";
         mDataActivityType = "undef";
+
         switch (direction) {
             case TelephonyManager.DATA_ACTIVITY_NONE:
                 mDataActivityTypeShort = "No";
@@ -571,6 +576,7 @@ public class Device {
     public void setSignalDbm(int signalDbm) {
         mCell.setDBM(signalDbm);
     }
+
     public int getSignalDBm() { return mCell.getDBM();}
 
     /**
@@ -600,65 +606,5 @@ public class Device {
      */
     public Location getLastLocation() {
         return mLastLocation;
-    }
-
-
-    /**
-     * Determines whether one Location reading is better than the current Location fix
-     *
-     * @param location            The new Location that you want to evaluate
-     * @param currentBestLocation The current Location fix, to which you want to compare the new
-     *                            one
-     */
-    public boolean isBetterLocation(Location location, Location currentBestLocation) {
-        if (currentBestLocation == null) {
-            // A new location is always better than no location
-            return true;
-        }
-
-        // Check whether the new location fix is newer or older
-        long timeDelta = location.getTime() - currentBestLocation.getTime();
-        boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
-        boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
-        boolean isNewer = timeDelta > 0;
-
-        // If it's been more than two minutes since the current location, use the new location
-        // because the user has likely moved
-        // E:V:A  2014-12-19  This may be a bad assumption, unless we also include
-        // movement detection (accelerometer)... Remove comment if ok.
-        if (isSignificantlyNewer) {
-            return true;
-            // If the last location is more than two minutes old, it must be worse
-        } else if (isSignificantlyOlder) {
-            return false;
-        }
-
-        // Check whether the new location fix is more or less accurate
-        int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
-        boolean isLessAccurate = accuracyDelta > 0;
-        boolean isMoreAccurate = accuracyDelta < 0;
-        boolean isSignificantlyLessAccurate = accuracyDelta > 200;
-
-        // Check if the old and new location are from the same provider
-        boolean isFromSameProvider = isSameProvider(location.getProvider(),
-                currentBestLocation.getProvider());
-
-        // Determine location quality using a combination of timeliness and accuracy
-        if (isMoreAccurate) {
-            return true;
-        } else if (isNewer && !isLessAccurate) {
-            return true;
-        } else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
-            return true;
-        }
-        return false;
-    }
-
-    /** Checks whether two providers are the same */
-    private boolean isSameProvider(String provider1, String provider2) {
-        if (provider1 == null) {
-            return provider2 == null;
-        }
-        return provider1.equals(provider2);
     }
 }

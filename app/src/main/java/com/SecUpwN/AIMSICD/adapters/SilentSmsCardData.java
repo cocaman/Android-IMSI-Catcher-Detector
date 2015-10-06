@@ -1,6 +1,12 @@
+/* Android IMSI-Catcher Detector | (c) AIMSICD Privacy Project
+ * -----------------------------------------------------------
+ * LICENSE:  http://git.io/vki47 | TERMS:  http://git.io/vki4o
+ * -----------------------------------------------------------
+ */
 package com.SecUpwN.AIMSICD.adapters;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class SilentSmsCardData {
 
@@ -10,6 +16,7 @@ public class SilentSmsCardData {
     private final String mServiceCentre;
     private final String mMessage;
     private final long mTimestamp;
+    private boolean mIsFakeData;
 
     public SilentSmsCardData(String address, String displayAddress, String messageClass,
             String serviceCentre, String messageBody, long timestamp) {
@@ -67,8 +74,16 @@ public class SilentSmsCardData {
     }
 
     public String getTimestamp() {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.getDefault());
         String dateString = formatter.format(mTimestamp);
         return "Timestamp: " + dateString;
+    }
+
+    public boolean isFakeData() {
+        return mIsFakeData;
+    }
+
+    public void setIsFakeData(boolean pIsFakeData) {
+        mIsFakeData = pIsFakeData;
     }
 }

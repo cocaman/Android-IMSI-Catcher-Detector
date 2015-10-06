@@ -1,3 +1,8 @@
+/* Android IMSI-Catcher Detector | (c) AIMSICD Privacy Project
+ * -----------------------------------------------------------
+ * LICENSE:  http://git.io/vki47 | TERMS:  http://git.io/vki4o
+ * -----------------------------------------------------------
+ */
 package com.SecUpwN.AIMSICD.utils;
 
 import android.os.AsyncTask;
@@ -19,24 +24,23 @@ import java.util.List;
  */
 public class Cell implements Parcelable {
 
-    //Cell Specific Variables
-    private int cid;  // Cell Identification code
-    private int lac;  // Location Area Code
-    private int mcc;  // Mobile Country Code
-    private int mnc;  // Mobile Network Code
-    private int dbm;  // [dBm] RX signal "power"
-    private int psc;  // Primary Scrambling Code
-    private int rssi; // Relative Signal Strength Indicator [dBm, asu etc.]
-    private int timingAdvance;       // Timing Advance [LTE,GSM]
-    //private int propagationDelay;  // Propagation Delay [LTE]
-    private int sid;                 // Cell-ID for [CDMA]
-    private long timestamp;
+    // Cell Specific Variables
+    private int cid;                // Cell Identification code
+    private int lac;                // Location Area Code
+    private int mcc;                // Mobile Country Code
+    private int mnc;                // Mobile Network Code
+    private int dbm;                // [dBm] RX signal "power"
+    private int psc;                // Primary Scrambling Code
+    private int rssi;               // Relative Signal Strength Indicator [dBm, asu etc.]
+    private int timingAdvance;      // Timing Advance [LTE,GSM]
+    private int sid;                // Cell-ID for [CDMA]
+    private long timestamp;         // time
 
-    //Tracked Cell Specific Variables
+    // Tracked Cell Specific Variables
     private int netType;
-    private double speed;
-    private double accuracy;
-    private double bearing;
+    private double speed;       //
+    private double accuracy;    //
+    private double bearing;     //
     private double lon;
     private double lat;
 
@@ -67,38 +71,40 @@ public class Cell implements Parcelable {
         this.mcc = mcc;
         this.mnc = mnc;
         this.dbm = dbm;
-        rssi = Integer.MAX_VALUE;
+        this.rssi = Integer.MAX_VALUE;
         this.psc = Integer.MAX_VALUE;
         this.timestamp = timestamp;
-        timingAdvance = Integer.MAX_VALUE;
-        sid = Integer.MAX_VALUE;
-        netType = Integer.MAX_VALUE;
-        lon = 0.0;
-        lat = 0.0;
-        speed = 0.0;
-        accuracy = 0.0;
-        bearing = 0.0;
+        this.timingAdvance = Integer.MAX_VALUE;
+        this.sid = Integer.MAX_VALUE;
+        this.netType = Integer.MAX_VALUE;
+        this.lon = 0.0;
+        this.lat = 0.0;
+        this.speed = 0.0;
+        this.accuracy = 0.0;
+        this.bearing = 0.0;
     }
 
     public Cell(int cid, int lac, int signal, int psc, int netType, boolean dbm) {
         this.cid = cid;
         this.lac = lac;
-        mcc = Integer.MAX_VALUE;
-        mnc = Integer.MAX_VALUE;
+        this.mcc = Integer.MAX_VALUE;
+        this.mnc = Integer.MAX_VALUE;
+
         if (dbm) {
             this.dbm = signal;
         } else {
             this.rssi = signal;
         }
         this.psc = psc;
+
         this.netType = netType;
-        timingAdvance = Integer.MAX_VALUE;
-        sid = Integer.MAX_VALUE;
-        lon = 0.0;
-        lat = 0.0;
-        speed = 0.0;
-        accuracy = 0.0;
-        bearing = 0.0;
+        this.timingAdvance = Integer.MAX_VALUE;
+        this.sid = Integer.MAX_VALUE;
+        this.lon = 0.0;
+        this.lat = 0.0;
+        this.speed = 0.0;
+        this.accuracy = 0.0;
+        this.bearing = 0.0;
         this.timestamp = SystemClock.currentThreadTimeMillis();
     }
 
@@ -109,9 +115,9 @@ public class Cell implements Parcelable {
         this.mcc = mcc;
         this.mnc = mnc;
         this.dbm = dbm;
-        rssi = Integer.MAX_VALUE;
-        timingAdvance = Integer.MAX_VALUE;
-        sid = Integer.MAX_VALUE;
+        this.rssi = Integer.MAX_VALUE;
+        this.timingAdvance = Integer.MAX_VALUE;
+        this.sid = Integer.MAX_VALUE;
         this.accuracy = accuracy;
         this.speed = speed;
         this.bearing = bearing;
@@ -322,15 +328,6 @@ public class Cell implements Parcelable {
     }
 
     /**
-     * Bearing
-     *
-     * @return Bearing (0.0, 360.0] or 0.0 if unavailable
-     */
-    public double getBearing() {
-        return this.bearing;
-    }
-
-    /**
      * Set current Bearing
      *
      * @param bearing Current bearing
@@ -406,7 +403,6 @@ public class Cell implements Parcelable {
     /**
      * TODO: What is this, and where is it supposed to be used ???
      *
-     *
      * @return
      */
     @Override
@@ -417,7 +413,8 @@ public class Cell implements Parcelable {
         result = prime * result + lac;
         result = prime * result + mcc;
         result = prime * result + mnc;
-        if (psc != -1) result = prime * result + psc;
+        if (psc != -1)
+            result = prime * result + psc;
         return result;
     }
 
@@ -444,6 +441,7 @@ public class Cell implements Parcelable {
 
     public String toString() {
         StringBuilder result = new StringBuilder();
+
         result.append("CID - ").append(cid).append("\n");
         result.append("LAC - ").append(lac).append("\n");
         result.append("MCC - ").append(mcc).append("\n");
@@ -464,9 +462,21 @@ public class Cell implements Parcelable {
     }
 
 
-    // What is this doing ??? (And from where is it called?)
+    /**
+     * Description:     This is used in in the All Current Cell Details (ACD) menu option.
+     *                  It was originally meant to look up single cell (BTS) info by querying OCID.
+     *
+     * Issues:
+     *                  TODO: What is the current development status of this? Implemented?
+     *
+     * Dependencies:
+     *                  AIMSICD.java -- selectItem()
+     *
+     */
     public static class CellLookUpAsync extends AsyncTask<String, Void, List<Cell>> {
-        public AsyncResponse delegate=null;
+        public AsyncResponse delegate = null;
+
+        private static final String TAG = "CellLookUpAsync";
 
         @Override
         protected List<Cell> doInBackground(String ... urls) {
@@ -478,8 +488,8 @@ public class Cell implements Parcelable {
 
                 URL url = new URL(urls[0]);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(10000 /* milliseconds */);
-                conn.setConnectTimeout(15000 /* milliseconds */);
+                conn.setReadTimeout(10000);     // [ms] 10s
+                conn.setConnectTimeout(15000);  // [ms] 15s
                 conn.setRequestMethod("GET");
                 conn.setDoInput(true);
                 // Starts the query
@@ -494,7 +504,7 @@ public class Cell implements Parcelable {
                 return cells;
 
             } catch (Exception e) {
-                Log.i("AIMSICD", "Cell Lookup - " + e.getMessage());
+                Log.i(TAG, e.getMessage(), e);
                 return null;
             }
         }
@@ -510,19 +520,19 @@ public class Cell implements Parcelable {
         String[] data = new String[15];
 
         in.readStringArray(data);
-        cid = Integer.valueOf(data[0]);
-        lac = Integer.valueOf(data[1]);
-        mcc = Integer.valueOf(data[2]);
-        mnc = Integer.valueOf(data[3]);
-        dbm = Integer.valueOf(data[4]);
-        psc = Integer.valueOf(data[5]);
-        rssi = Integer.valueOf(data[6]);
+        cid     = Integer.valueOf(data[0]);
+        lac     = Integer.valueOf(data[1]);
+        mcc     = Integer.valueOf(data[2]);
+        mnc     = Integer.valueOf(data[3]);
+        dbm     = Integer.valueOf(data[4]);
+        psc     = Integer.valueOf(data[5]);
+        rssi    = Integer.valueOf(data[6]);
         timingAdvance = Integer.valueOf(data[7]);
-        sid = Integer.valueOf(data[8]);
+        sid     = Integer.valueOf(data[8]);
         netType = Integer.valueOf(data[9]);
-        lon = Double.valueOf(data[10]);
-        lat = Double.valueOf(data[11]);
-        speed = Double.valueOf(data[12]);
+        lon     = Double.valueOf(data[10]);
+        lat     = Double.valueOf(data[11]);
+        speed   = Double.valueOf(data[12]);
         accuracy = Double.valueOf(data[13]);
         bearing = Double.valueOf(data[14]);
     }

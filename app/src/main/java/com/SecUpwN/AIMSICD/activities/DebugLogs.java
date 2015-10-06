@@ -1,3 +1,8 @@
+/* Android IMSI-Catcher Detector | (c) AIMSICD Privacy Project
+ * -----------------------------------------------------------
+ * LICENSE:  http://git.io/vki47 | TERMS:  http://git.io/vki4o
+ * -----------------------------------------------------------
+ */
 package com.SecUpwN.AIMSICD.activities;
 
 import android.content.ClipData;
@@ -41,6 +46,8 @@ import java.io.InputStreamReader;
  *                  but never implemented here. We need to add the buffer selector button
  *                  to the top bar, next to email icon button. **
  *
+ *  TODO:   [ ]     We should add an XPrivacy button (or automatic) to add XPrivacy filters when used.
+ *
  *  ChangeLog:
  *
  *          2015-01-27  E:V:A   Added "getprop|sort" info to log.
@@ -48,11 +55,14 @@ import java.io.InputStreamReader;
  *          2015-02-11  E:V:A   Increased to 500 lines and removed "-d" and
  *                              incl. radio log, but not working. Permission problem?
  *          2015-02-24  E:V:A   Silent some spam logs on HTC devices.
+ *          2015-07-03  E:V:A   Silent some spam logs from the XPosed framework
  *
  */
 
-
 public class DebugLogs extends BaseActivity {
+
+    private static final String TAG = "DebugLogs";
+
     private LogUpdaterThread logUpdater = null;
     private boolean updateLogs = true;
     private boolean isRadioLogs = true; // Including this, should be a toggle.
@@ -61,7 +71,6 @@ public class DebugLogs extends BaseActivity {
     private Button btnClear = null;
     private Button btnCopy = null;
     private Button btnStop = null;
-    //private Button btnRadio = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +83,6 @@ public class DebugLogs extends BaseActivity {
         btnClear = (Button) findViewById(R.id.btnClear);
         btnStop = (Button) findViewById(R.id.btnStopLogs);
         btnCopy = (Button) findViewById(R.id.btnCopy);
-        //btnRadio = (Button) findViewById(R.id.btnRadio);
 
         runOnUiThread(new Runnable() {
             @Override
@@ -88,9 +96,8 @@ public class DebugLogs extends BaseActivity {
             public void onClick(View view) {
                 try {
                     clearLogs();
-                    //Log.d("DebugLogs", "Logcat clearing disabled!");
-                } catch (Exception e) {
-                    Log.e("AIMSICD", "DebugLogs: Error clearing logs", e);
+                } catch (IOException e) {
+                    Log.e(TAG, "Error clearing logs", e);
                 }
             }
         });
@@ -149,12 +156,10 @@ public class DebugLogs extends BaseActivity {
 
     private void startLogging() {
         updateLogs = true;
-        try {
-            logUpdater = new LogUpdaterThread();
-            logUpdater.start();
-        } catch (Exception e) {
-            Log.e("AIMSICD", "DebugLogs: Error starting log updater thread", e);
-        }
+
+        logUpdater = new LogUpdaterThread();
+        logUpdater.start();
+
         btnStop.setText(getString(R.string.btn_stop_logs));
     }
 
@@ -193,20 +198,20 @@ public class DebugLogs extends BaseActivity {
             public void run() {
                 // Send Error Log
                 try {
-                    String helpUs = "For best help, please describe the problem you had, before sending us these logs. NO HELP WITHOUT DESCRIPTIONS!\n";
+                    String helpUs = getString(R.string.describe_the_problem_you_had);
                     String log = helpUs + "\n\n" + "GETPROP:" + "\n\n" + getProp() +
                                           "\n\n" + "LOGCAT:" + "\n\n" + getLogs() + "\n\n" + helpUs;
 
                     // show a share intent
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/html");
-                    // This is a masked email to one of our developers. In case of spam re-mask.
-                    intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"SecUpwN[-AT-]protonmail.ch"});
+                    // E-Mail address will ONLY be handed out when a DEVELOPER asked for the logs!
+                    intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"See GitHub Issues first!"});
                     intent.putExtra(Intent.EXTRA_SUBJECT, "AIMSICD Error Log");
                     intent.putExtra(Intent.EXTRA_TEXT, log);
                     startActivity(Intent.createChooser(intent, "Send Error Log"));
                 } catch (IOException e) {
-                    Log.e("AIMSICD", "DebugLogs: Error reading logs", e);
+                    Log.w(TAG, "Error reading logs", e);
                 }
             }
         }.start();
@@ -236,6 +241,8 @@ public class DebugLogs extends BaseActivity {
      *  4) Need to silent some Qualcomm GPS:                " LocSvc_eng:S LocSvc_adapter:S LocSvc_afw:S"
      *  5) "-d" is not necessary when using "-t".
      *  6) Need to silent some spammy HTC's:                "QC-QMI:S AudioPolicyManager:S"
+     *  7) Need to silent some spammy XPrivacy items:       "XPrivacy/XRuntime:S Xposed:S"
+     *  8) Need to silent even more XPrivacy items:         "XPrivacy/XTelephonyManager:S XPrivacy/XLocationManager:S XPrivacy/XPackageManager:S"
      *
      */
     private String getLogs() throws IOException {
@@ -244,7 +251,9 @@ public class DebugLogs extends BaseActivity {
                     (isRadioLogs ? " -b radio RILQ:S" : "") +
                     " AbsListView:S PackageInfo:S" +
                     " LocSvc_eng:S LocSvc_adapter:S LocSvc_afw:S" +
-                    " QC-QMI:S AudioPolicyManager:S" + " *:D"
+                    " QC-QMI:S AudioPolicyManager:S" +
+                    " XPrivacy/XRuntime:S Xposed:S" +
+                    " XPrivacy/XTelephonyManager:S XPrivacy/XLocationManager:S XPrivacy/XPackageManager:S" + " *:D"
         );
     }
 
@@ -264,8 +273,10 @@ public class DebugLogs extends BaseActivity {
      */
     private String runProcess(String[] command) throws IOException {
         Process process = null;
-        if (command.length == 1) process = Runtime.getRuntime().exec(command[0]);
-        else Runtime.getRuntime().exec(command);
+        if (command.length == 1)
+            process = Runtime.getRuntime().exec(command[0]);
+        else
+            Runtime.getRuntime().exec(command);
 
         BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(process.getInputStream()));
@@ -276,6 +287,7 @@ public class DebugLogs extends BaseActivity {
             log.append(line);
             log.append("\n");
         }
+        bufferedReader.close();
         return log.toString();
     }
 
@@ -290,8 +302,8 @@ public class DebugLogs extends BaseActivity {
             public void run() {
                 try {
                     Runtime.getRuntime().exec("logcat -c -b main -b system -b radio -b events");
-                } catch (Exception e) {
-                    Log.e("AIMSICD", "DebugLogs: Error clearing logs", e);
+                } catch (IOException e) {
+                    Log.e(TAG, "Error clearing logs", e);
                 }
 
                 runOnUiThread(new Runnable() {
@@ -309,7 +321,6 @@ public class DebugLogs extends BaseActivity {
         public void run() {
             while (updateLogs) {
                 try {
-                    //Log.d("log_thread", "running");
                     final String logs = getLogs();
                     if (!logs.equals(logView.getText().toString())) {
                         runOnUiThread(new Runnable() {
@@ -329,10 +340,14 @@ public class DebugLogs extends BaseActivity {
                             }
                         });
                     }
-                } catch (Exception e) {
-                    Log.e("AIMSICD", "DebugLogs: Error updating logs", e);
+                } catch (IOException e) {
+                    Log.w(TAG, "Error updating logs", e);
                 }
-                try { Thread.sleep(1000); } catch (Exception e) {}
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Log.w(TAG, "Thread was interrupted", e);
+                }
             }
         }
     }

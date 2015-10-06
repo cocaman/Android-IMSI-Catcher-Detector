@@ -1,3 +1,9 @@
+/* Android IMSI-Catcher Detector | (c) AIMSICD Privacy Project
+ * -----------------------------------------------------------
+ * LICENSE:  http://git.io/vki47 | TERMS:  http://git.io/vki4o
+ * -----------------------------------------------------------
+ */
+ 
 /*  This was introduced by Aussie in the Pull Request Commit: 
  * https://github.com/xLaMbChOpSx/Android-IMSI-Catcher-Detector/commit/6d8719ab356a3ecbd0b526a9ded0cabb17ab2021
  * 
@@ -127,8 +133,8 @@ public class CellInfoFragment extends Fragment {
         //    CellTracker.java :: onSharedPreferenceChanged()
         if (CellTracker.REFRESH_RATE != 0) {
             timerHandler.postDelayed(timerRunnable, 0);
-            Helpers.msgShort(mContext, "Refreshing every "
-                    + TimeUnit.MILLISECONDS.toSeconds(CellTracker.REFRESH_RATE) + " seconds.");
+            Helpers.msgShort(mContext, mContext.getString(R.string.refreshing_every) + " " +
+                    TimeUnit.MILLISECONDS.toSeconds(CellTracker.REFRESH_RATE) + " " + mContext.getString(R.string.seconds));
         }
     }
 
@@ -187,7 +193,7 @@ public class CellInfoFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Helpers.msgShort(mContext, "Refreshing now...");
+            Helpers.msgShort(mContext, mAimsicdService.getString(R.string.refreshing_now));
             updateUI();
         }
     }
